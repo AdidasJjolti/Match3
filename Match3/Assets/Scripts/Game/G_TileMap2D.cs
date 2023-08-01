@@ -6,24 +6,29 @@ public class G_TileMap2D : MonoBehaviour
 {
     [Header("Tile")]
     [SerializeField] GameObject _tilePrefab;
+    int _width;
+    int _height;
 
     public void GenerateTileMap(MapData mapData)
     {
-        int width = mapData._mapSize.x;
-        int height = mapData._mapSize.y;
+        _width = mapData._mapSize.x;
+        _height = mapData._mapSize.y;
 
-        for(int y = 0; y < height; ++y)
+        GetWidth();
+        GetHeight();
+
+        for(int y = 0; y < _height; ++y)
         {
-            for(int x = 0; x < width; ++x)
+            for(int x = 0; x < _width; ++x)
             {
-                int index = y * width + x;   // 왼쪽 상단부터 오른쪽 하단까지 번호 지정 (0, 1, 2, ...)
+                int index = y * _width + x;   // 왼쪽 상단부터 오른쪽 하단까지 번호 지정 (0, 1, 2, ...)
                 if(mapData._mapData[index] == (int)_eTileType.EMPTY)   // EMPTY 타일이면 생성하지 않음
                 {
                     continue;
                 }
 
                 // 생성되는 타일맵의 중앙이 (0, 0, 0인 위치)
-                Vector3 position = new Vector3((width * 0.5f * -1 + 0.5f) + x, (height * 0.5f - 0.5f) - y, 0);
+                Vector3 position = new Vector3((_width * 0.5f * -1 + 0.5f) + x, (_height * 0.5f - 0.5f) - y, 0);
 
                 if (mapData._mapData[index] > (int)_eTileType.EMPTY)   // EMPTY 타일이 아니면 자리마다 타일 생성
                 {
@@ -41,5 +46,15 @@ public class G_TileMap2D : MonoBehaviour
 
         Tile tile = clone.GetComponent<Tile>();
         tile.Setup(tileType);     // 생성한 clone 오브젝트의 Setup 함수 호출
+    }
+
+    public int GetWidth()
+    {
+        return _width;
+    }
+
+    public int GetHeight()
+    {
+        return _height;
     }
 }

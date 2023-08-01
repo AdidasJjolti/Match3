@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] float _moveSpeed;       // 카메라 이동 속도
     [SerializeField] float _zoomSpeed;       // 카메라 줌 속도
     [SerializeField] float _minViewSize = 2f; // 카메라 시야 최소 크기
-    float _maxViewSize;                       // 카메라 시야 최대 크디
+    float _maxViewSize;                       // 카메라 시야 최대 크기
 
     float _wDelta = 0.9f;   // 가로 시야 보정값
     float _hDelta = 0.6f;   // 세로 시야 보정값
