@@ -5,9 +5,11 @@ using UnityEngine;
 public enum _eTileType
 {
     EMPTY = 0,
-    GRASS,
-    NORMAL,
-    HARD
+    GRASS,      // 여기는 블럭을 배치하지 않음, 사실상 EMPTY
+    NORMAL,     // 여기 있는 블럭은 한 번만에 깰 수 있음
+    HARD,       // 여기 있는 블럭은 깰 수 없음
+
+    MAX
 }
 
 public class Tile : MonoBehaviour
