@@ -19,6 +19,11 @@ namespace Match3.Board
                 _tileType = value;
             }
         }
+
+        public Cell(_eTileType tileType)
+        {
+            _tileType = tileType;
+        }
     }
 }
 

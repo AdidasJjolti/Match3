@@ -27,6 +27,11 @@ namespace Match3.Board
                 _blockType = value;
             }
         }
+
+        public Block(_eBlockType blockType)
+        {
+            _blockType = blockType;
+        }
     }
 }
 
