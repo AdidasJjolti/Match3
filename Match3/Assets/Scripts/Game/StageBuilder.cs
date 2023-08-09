@@ -8,16 +8,15 @@ namespace Match3.Stage
     public class StageBuilder
     {
         int _nStage;   // 플레이중인 스테이지 번호
-        G_TileMap2D _tileMap2D;
+
 
         public StageBuilder(int nStage)
         {
             _nStage = nStage;
         }
 
-        public Stage ComposeStage(int row, int col)
+        public Stage ComposeStage(int row, int col, G_TileMap2D tilemap2D)
         {
-
             // Stage 객체 생성
             Stage stage = new Stage(this, row, col);
 
@@ -26,7 +25,7 @@ namespace Match3.Stage
                 for(int nCol = 0; nCol < col; nCol++)
                 {
                     stage.blocks[nRow, nCol] = SpawnBlockForStage(nRow, nCol);
-                    stage.cells[nRow, nCol] = SpawnCellForStage(nRow, nCol);
+                    stage.cells[nRow, nCol] = SpawnCellForStage(nRow, nCol, tilemap2D);
                 }
             }
 
@@ -41,9 +40,10 @@ namespace Match3.Stage
             return new Block(_eBlockType.BASIC);
         }
 
-        Cell SpawnCellForStage(int row, int col)
+        Cell SpawnCellForStage(int row, int col, G_TileMap2D tilemap2D)
         {
-            return new Cell(_eTileType.NORMAL);
+            _eTileType type = (_eTileType)Match3.Stage.StageController._data._mapData[row * tilemap2D.GetWidth() + col];
+            return new Cell(type);
         }
 
         // StageBuilder 생성
@@ -55,7 +55,7 @@ namespace Match3.Stage
             {
                 Debug.Log("스테이지 빌더가 없음");
             }
-            Stage stage = stageBuilder.ComposeStage(row, col);
+            Stage stage = stageBuilder.ComposeStage(row, col, tilemap2D);
 
             return stage;
         }

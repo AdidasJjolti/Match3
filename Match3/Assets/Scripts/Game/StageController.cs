@@ -12,6 +12,7 @@ namespace Match3.Stage
         bool _Init;     // 초기화 상태 체크
         Stage _stage;   // Stage 변수 선언
         int _stageNumber;
+        public static MapData _data;
 
         void Awake()
         {
@@ -19,6 +20,7 @@ namespace Match3.Stage
             MapData mapData = _mapDataLoader.Load($"stage{_stageNumber+1}");              // stage1 데이터 파일을 불러오기
             _tilemap2D.GenerateTileMap(mapData);                                          // mapData를 바탕으로 타일 생성
             _cameraController.SetupCamera();                                              // 타일맵 크기에 맞게 카메라 시야 재설정
+            _data = mapData;
         }
 
         void Start()
