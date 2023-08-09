@@ -11,13 +11,14 @@ namespace Match3.Stage
 
         bool _Init;     // 초기화 상태 체크
         Stage _stage;   // Stage 변수 선언
+        int _stageNumber;
 
         void Awake()
         {
             MapDataLoader _mapDataLoader = new MapDataLoader();
-            //MapData mapData = _mapDataLoader.Load("stage1");              // stage1 데이터 파일을 불러오기
-            //_tilemap2D.GenerateTileMap(mapData);                          // mapData를 바탕으로 타일 생성
-            //_cameraController.SetupCamera();                              // 타일맵 크기에 맞게 카메라 시야 재설정
+            MapData mapData = _mapDataLoader.Load($"stage{_stageNumber+1}");              // stage1 데이터 파일을 불러오기
+            _tilemap2D.GenerateTileMap(mapData);                                          // mapData를 바탕으로 타일 생성
+            _cameraController.SetupCamera();                                              // 타일맵 크기에 맞게 카메라 시야 재설정
         }
 
         void Start()
@@ -33,6 +34,7 @@ namespace Match3.Stage
             }
 
             _Init = true;
+            _stageNumber = 0;
 
             BuildStage();   // 스테이지 구성을 위해 호출
             _stage.PrintAll();
@@ -40,7 +42,7 @@ namespace Match3.Stage
 
         void BuildStage()
         {
-            _stage = StageBuilder.BuildStage(nStage : 0, row : 9, col : 9);
+            _stage = StageBuilder.BuildStage(nStage : _stageNumber, row : _tilemap2D.GetWidth(), col : _tilemap2D.GetHeight(), _tilemap2D);
         }
     }
 }

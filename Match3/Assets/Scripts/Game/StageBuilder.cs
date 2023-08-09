@@ -8,6 +8,7 @@ namespace Match3.Stage
     public class StageBuilder
     {
         int _nStage;   // 플레이중인 스테이지 번호
+        G_TileMap2D _tileMap2D;
 
         public StageBuilder(int nStage)
         {
@@ -47,14 +48,14 @@ namespace Match3.Stage
 
         // StageBuilder 생성
         // Stage를 구성하는 cell, block을 생성하는 ComposeStage를 호출하여 Stage 생성
-        public static Stage BuildStage(int nStage, int row, int col)
+        public static Stage BuildStage(int nStage, int row, int col, G_TileMap2D tilemap2D)
         {
-            StageBuilder stageBuilder = new StageBuilder(0);   // 0번 스테이지 생성
+            StageBuilder stageBuilder = new StageBuilder(nStage);   // 0번 스테이지 생성
             if(stageBuilder == null)
             {
                 Debug.Log("스테이지 빌더가 없음");
             }
-            Stage stage = stageBuilder.ComposeStage(9, 9);
+            Stage stage = stageBuilder.ComposeStage(row, col);
 
             return stage;
         }

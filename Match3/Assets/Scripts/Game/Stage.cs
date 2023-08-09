@@ -8,22 +8,19 @@ namespace Match3.Stage
 {
     public class Stage
     {
-        int _row;
-        int _col;
-
         // 플레이할 게임판의 행, 열 저장
         public int _Row
         {
             get
             {
-                return _row;
+                return _board._Row;
             }
         }
         public int _Col
         {
             get
             {
-                return _col;
+                return _board._Col;
             }
         }
 
@@ -59,8 +56,6 @@ namespace Match3.Stage
         {
             _stageBuilder = stageBuilder;
             _board = new Match3.Board.Board(row, col);
-            _row = row;
-            _col = col;
         }
 
         public void PrintAll()
@@ -70,7 +65,7 @@ namespace Match3.Stage
 
             for(int nRow = _Row - 1; nRow >= 0; nRow--)
             {
-                for (int nCol = 0; nRow < _Col; nCol++)
+                for (int nCol = 0; nCol < _Col; nCol++)
                 {
                     strCells.Append($"{cells[nRow, nCol].type}, ");
                     strBlocks.Append($"{blocks[nRow, nCol].type}, ");
