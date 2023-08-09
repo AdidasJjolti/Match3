@@ -40,7 +40,7 @@ namespace Match3.Stage
 
         void BuildStage()
         {
-            _stage = StageBuilder.BuildStage(0, 9, 9);
+            _stage = StageBuilder.BuildStage(nStage : 0, row : 9, col : 9);
         }
     }
 }

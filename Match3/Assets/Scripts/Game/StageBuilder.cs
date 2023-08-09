@@ -54,7 +54,7 @@ namespace Match3.Stage
             {
                 Debug.Log("스테이지 빌더가 없음");
             }
-            Stage stage = stageBuilder.ComposeStage(row, col);
+            Stage stage = stageBuilder.ComposeStage(9, 9);
 
             return stage;
         }

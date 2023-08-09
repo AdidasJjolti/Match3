@@ -59,7 +59,8 @@ namespace Match3.Stage
         {
             _stageBuilder = stageBuilder;
             _board = new Match3.Board.Board(row, col);
-
+            _row = row;
+            _col = col;
         }
 
         public void PrintAll()
