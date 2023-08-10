@@ -6,6 +6,7 @@ public class G_TileMap2D : MonoBehaviour
 {
     [Header("Tile")]
     [SerializeField] GameObject _tilePrefab;
+    [SerializeField] GameObject _blockPrefab;
     int _width;
     int _height;
 
@@ -34,6 +35,11 @@ public class G_TileMap2D : MonoBehaviour
                 {
                     SpawnTile((_eTileType)mapData._mapData[index], position);
                 }
+
+                if(mapData._mapData[index] == (int)_eTileType.NORMAL)
+                {
+                    SpawnBLock(position);
+                }
             }
         }
     }
@@ -46,6 +52,15 @@ public class G_TileMap2D : MonoBehaviour
 
         Tile tile = clone.GetComponent<Tile>();
         tile.Setup(tileType);     // 생성한 clone 오브젝트의 Setup 함수 호출
+    }
+
+    void SpawnBLock(Vector3 position)
+    {
+        GameObject clone = Instantiate(_blockPrefab, position, Quaternion.identity);
+        clone.name = "Block";
+        clone.transform.SetParent(transform);
+
+        
     }
 
     public int GetWidth()

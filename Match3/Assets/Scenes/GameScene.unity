@@ -214,6 +214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tilePrefab: {fileID: 7797398283439507908, guid: f77d04c7dc2ecd349a2bc6052b61550f, type: 3}
+  _blockPrefab: {fileID: 2100474234378563109, guid: 5855ca3c0fa9f964189163b24cfe207e, type: 3}
 --- !u!1 &1039161960
 GameObject:
   m_ObjectHideFlags: 0
