@@ -36,7 +36,7 @@ public class G_TileMap2D : MonoBehaviour
                     SpawnTile((_eTileType)mapData._mapData[index], position);
                 }
 
-                if(mapData._mapData[index] == (int)_eTileType.NORMAL)
+                if(mapData._mapData[index] == (int)_eTileType.NORMAL)  // NORMAL 타일인 곳에만 블럭 생성
                 {
                     SpawnBLock(position);
                 }
@@ -58,9 +58,7 @@ public class G_TileMap2D : MonoBehaviour
     {
         GameObject clone = Instantiate(_blockPrefab, position, Quaternion.identity);
         clone.name = "Block";
-        clone.transform.SetParent(transform);
-
-        
+        clone.transform.SetParent(transform); 
     }
 
     public int GetWidth()
