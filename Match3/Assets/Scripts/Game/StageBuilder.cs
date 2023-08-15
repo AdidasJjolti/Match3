@@ -24,7 +24,8 @@ namespace Match3.Stage
             {
                 for(int nCol = 0; nCol < col; nCol++)
                 {
-                    stage.blocks[nRow, nCol] = SpawnBlockForStage(nRow, nCol);
+                    Debug.Log("블럭 배열 만들게");
+                    stage.blocks[nRow, nCol] = SpawnBlockForStage(nRow, nCol, tilemap2D);
                     stage.cells[nRow, nCol] = SpawnCellForStage(nRow, nCol, tilemap2D);
                 }
             }
@@ -33,13 +34,21 @@ namespace Match3.Stage
         }
 
 
-        //임시로 모든 블럭을 기본 타입, 모든 셀을 노말 타입으로 불러오는 함수 생성
-
-        Block SpawnBlockForStage(int row, int col)
+        Block SpawnBlockForStage(int row, int col, G_TileMap2D tilemap2D)
         {
-            return new Block(_eBlockType.BASIC);
+            _eTileType cellType = (_eTileType)Match3.Stage.StageController._data._mapData[row * tilemap2D.GetWidth() + col];
+            if (cellType == _eTileType.GRASS || cellType == _eTileType.EMPTY)
+            {
+                return new Block(_eBlockType.EMPTY);
+            }
+            else
+            {
+                return new Block(_eBlockType.BASIC);
+            }
+            //return new Block(_eBlockType.BASIC);
         }
 
+        // tilemap2D에 있는 데이터를 불러와 셀 생성
         Cell SpawnCellForStage(int row, int col, G_TileMap2D tilemap2D)
         {
             _eTileType type = (_eTileType)Match3.Stage.StageController._data._mapData[row * tilemap2D.GetWidth() + col];
