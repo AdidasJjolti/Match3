@@ -33,7 +33,6 @@ public class G_TileMap2D : MonoBehaviour
                 // 생성되는 타일맵의 중앙이 (0, 0, 0인 위치)
                 Vector3 position = new Vector3((_width * 0.5f * -1 + 0.5f) + x, (_height * 0.5f - 0.5f) - y, 0);
 
-                Debug.Log("블럭 스폰할게");
                 if (mapData._mapData[index] > (int)_eTileType.EMPTY)   // EMPTY 타일이 아니면 자리마다 타일 생성
                 {
                     SpawnTile((_eTileType)mapData._mapData[index], position);

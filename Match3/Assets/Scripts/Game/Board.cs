@@ -8,6 +8,7 @@ namespace Match3.Board
     {
         int _row;
         int _col;
+        Transform _container;
 
         // 플레이할 게임판의 행, 열 저장
         public int _Row
@@ -56,6 +57,50 @@ namespace Match3.Board
             // Cell, Block 각각의 2차원 배열을 생성
             _cells = new Cell[row, col];
             _blocks = new Block[row, col];
+        }
+
+        void ComposeStage(Transform container)
+        {
+            _container = container;
+
+            BoardShuffler shuffler = new BoardShuffler(this, true);
+            shuffler.Shuffle();
+        }
+
+
+        // 해당 위치 블럭이 셔플 대상인지 검사
+        // 지정된 위치에 NORMAL 타입 셀인 경우 true 반환
+        public bool CanShuffle(int nRow, int nCol, bool loading)
+        {
+            if (_cells[nRow, nCol].type != _eTileType.NORMAL)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // 해당 블럭의 breed를 다른 값으로 변경
+        public void ChangeBlock(Block block, _eBlockBreed notAllowedBreed)
+        {
+            _eBlockBreed genBreed;
+
+
+            // notAllowedBreed와 중복되지 않을 때까지 반복
+            while (true)
+            {
+                genBreed = (_eBlockBreed)Random.Range(0, 6);
+
+                if (notAllowedBreed == genBreed)
+                {
+                    continue;
+                }
+
+                break;
+            }
+
+            // 새로운 breed를 설정
+            block.breed = genBreed;
         }
     }
 }

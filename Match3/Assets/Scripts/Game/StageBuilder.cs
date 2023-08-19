@@ -20,11 +20,10 @@ namespace Match3.Stage
             // Stage 객체 생성
             Stage stage = new Stage(this, row, col);
 
-            for(int nRow = 0; nRow < row; nRow++)
+            for (int nRow = 0; nRow < row; nRow++)
             {
                 for(int nCol = 0; nCol < col; nCol++)
                 {
-                    Debug.Log("블럭 배열 만들게");
                     stage.blocks[nRow, nCol] = SpawnBlockForStage(nRow, nCol, tilemap2D);
                     stage.cells[nRow, nCol] = SpawnCellForStage(nRow, nCol, tilemap2D);
                 }

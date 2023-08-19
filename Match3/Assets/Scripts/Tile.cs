@@ -33,4 +33,16 @@ public class Tile : MonoBehaviour
         }
         get => _tileType;
     }
+
+    // 블럭이 위치할 수 있는 타입인지 체크
+    public bool IsBlockAllocatableType(_eTileType type)
+    {
+        return (type == _eTileType.NORMAL);
+    }
+
+    // 블럭이 이동 가능한 타입인지 체크
+    public bool IsBlockMovableType(_eTileType type)
+    {
+        return (type == _eTileType.NORMAL);
+    }
 }
