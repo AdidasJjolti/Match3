@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Match3.Board
 {
-    using BlockVectorKV = KeyValuePair<Block, Vector2Int>;     // Block, Vector2Int로 구성된 KVP를 BlockVectorKV로 재정의
+    using BlockVectorKV = KeyValuePair<Block, Vector2Int>;     // Block, Vector2Int로 구성된 KVP를 BlockVectorKV로 타입 재정의
     public class BoardShuffler
     {
         Board _board;
@@ -41,9 +41,29 @@ namespace Match3.Board
                         continue;
                     }
 
+                    // ToDo : 셔플 대상 블럭 체크하는 로직 코드 해석
                     if(_board.CanShuffle(nRow, nCol, _loadingMode))
                     {
-                        // ToDo : 셔플 로직 추가 예정
+                        block.ResetDuplicationInfo();
+                    }
+                    // 셔플할 수 없는 블럭 검사
+                    else
+                    {
+                        block.horzDuplicate = 1;
+                        block.vertDuplicate = 1;
+
+                        // (nRow, nCol - 1)에 위치한 블럭과 (nRow, nCol)에 위치한 블럭 종류 비교
+                        if (nCol > 0 && !_board.CanShuffle(nRow, nCol - 1, _loadingMode) && _board.blocks[nRow, nCol - 1].IsSafeEqual(block))
+                        {
+                            block.horzDuplicate = 2;
+                            _board.blocks[nRow, nCol - 1].horzDuplicate = 2;
+                        }
+
+                        if (nRow > 0 && !_board.CanShuffle(nRow - 1, nCol, _loadingMode) && _board.blocks[nRow - 1, nCol].IsSafeEqual(block))
+                        {
+                            block.vertDuplicate = 2;
+                            _board.blocks[nRow - 1, nCol].vertDuplicate = 2;
+                        }
                     }
                 }
             }
