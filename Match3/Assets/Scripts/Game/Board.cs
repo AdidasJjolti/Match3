@@ -67,6 +67,15 @@ namespace Match3.Board
             shuffler.Shuffle();
         }
 
+        public float CalcInitX(float offset = 0)
+        {
+            return -_Col / 2.0f + offset;
+        }
+
+        public float CalcInitY(float offset = 0)
+        {
+            return -_Row / 2.0f + offset;
+        }
 
         // 해당 위치 블럭이 셔플 대상인지 검사
         // 지정된 위치에 NORMAL 타입 셀인 경우 true 반환

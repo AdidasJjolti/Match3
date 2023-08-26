@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Match3.Board;
 
 public class Tilemap2D : MonoBehaviour
 {

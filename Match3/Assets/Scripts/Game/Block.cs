@@ -42,6 +42,11 @@ namespace Match3.Board
             }
         }
 
+        internal void Move(float x, float y)
+        {
+            this.transform.position = new Vector3(x, y);
+        }
+
         public _eBlockBreed _breed;
         public _eBlockBreed breed
         {
