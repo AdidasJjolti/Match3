@@ -120,8 +120,9 @@ namespace Match3.Board
             _eBlockBreed prevBreed = _eBlockBreed.NONE;
             Block firstBlock = null;
 
+            int i = 0;
             bool useQueue = true;
-            while(true)
+            while(true || i < 1000)
             {
                 BlockVectorKV blockInfo = NextBlock(useQueue);
                 Block block = blockInfo.Key;
@@ -132,7 +133,7 @@ namespace Match3.Board
                     block = blockInfo.Key;
                 }
 
-                Debug.Assert(block != null, $"Block Can't Be Null : queue count -> ${_UnusedBlocks.Count}");
+                Debug.Assert(block != null, $"Block Can't Be Null : queue count -> {_UnusedBlocks.Count}");
 
                 if(prevBreed == _eBlockBreed.NONE)
                 {
@@ -153,10 +154,12 @@ namespace Match3.Board
 
                 Vector2Int vtDup = CalcDuplications(nRow, nCol, block);
 
-                if(vtDup.x > 2 || vtDup.y > 2)
+                i++;
+
+                if (vtDup.x > 2 || vtDup.y > 2)
                 {
                     _UnusedBlocks.Enqueue(blockInfo);
-                    useQueue = _listComplete || useQueue;
+                    useQueue = _listComplete || !useQueue;
 
                     continue;
                 }
@@ -172,6 +175,9 @@ namespace Match3.Board
 
                 return block;
             }
+
+            Debug.Log(i.ToString());
+            return null;
         }
 
         BlockVectorKV NextBlock(bool useQueue)      // useQueue가 true면 큐에서 블럭을 꺼내고 false면 리스트에서 블럭을 꺼내서 리턴
@@ -181,7 +187,7 @@ namespace Match3.Board
                 return _UnusedBlocks.Dequeue();
             }
 
-            if(_listComplete && _it.MoveNext())
+            if(!_listComplete && _it.MoveNext())
             {
                 return _it.Current.Value;
             }

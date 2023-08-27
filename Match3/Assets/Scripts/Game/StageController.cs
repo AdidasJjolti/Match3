@@ -44,7 +44,12 @@ namespace Match3.Stage
 
         void BuildStage()
         {
-            _stage = StageBuilder.BuildStage(nStage : _stageNumber, row : _tilemap2D.GetWidth(), col : _tilemap2D.GetHeight(), _tilemap2D);
+            _stage = StageBuilder.BuildStage(nStage : _stageNumber, _tilemap2D);
+
+            if (_stage != null)
+            {
+                _stage.board.ComposeStage();
+            }
         }
     }
 }

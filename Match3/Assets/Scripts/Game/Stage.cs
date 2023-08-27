@@ -58,6 +58,7 @@ namespace Match3.Stage
             _board = new Match3.Board.Board(row, col);
         }
 
+        
         public void PrintAll()
         {
             System.Text.StringBuilder strCells = new System.Text.StringBuilder();
@@ -78,6 +79,7 @@ namespace Match3.Stage
             Debug.Log(strCells.ToString());
             Debug.Log(strBlocks.ToString());
         }
+        
     }
 }
 

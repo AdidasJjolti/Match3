@@ -59,10 +59,21 @@ namespace Match3.Board
             _blocks = new Block[row, col];
         }
 
-        void ComposeStage(Transform container)
+        internal void ComposeStage(Transform container = null)
         {
             _container = container;
-
+            
+            //for(int i = 0; i < _Row; i++)
+            //{
+            //    for (int j = 0; j < _Col; j++)
+            //    {
+            //        if(_blocks[i,j].GetComponent<Block>())
+            //        {
+            //            Debug.Log($"{i}, {j} : Valid Block");
+            //        }
+            //    }
+            //}
+            
             BoardShuffler shuffler = new BoardShuffler(this, true);
             shuffler.Shuffle();
         }
@@ -94,17 +105,14 @@ namespace Match3.Board
         {
             _eBlockBreed genBreed;
 
-
             // notAllowedBreed와 중복되지 않을 때까지 반복
             while (true)
             {
                 genBreed = (_eBlockBreed)Random.Range(0, 6);
-
                 if (notAllowedBreed == genBreed)
                 {
                     continue;
                 }
-
                 break;
             }
 

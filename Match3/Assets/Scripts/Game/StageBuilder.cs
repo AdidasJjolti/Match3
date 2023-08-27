@@ -9,14 +9,22 @@ namespace Match3.Stage
     {
         int _nStage;   // 플레이중인 스테이지 번호
 
-
         public StageBuilder(int nStage)
         {
             _nStage = nStage;
         }
 
-        public Stage ComposeStage(int row, int col, G_TileMap2D tilemap2D)
+        public Stage ComposeStage(G_TileMap2D tilemap2D)
         {
+            if (tilemap2D == null)
+            {
+                Debug.Log("Tilemap2D Argument Was Null.");
+                return null;
+            }
+
+            int row = tilemap2D.GetWidth();
+            int col = tilemap2D.GetHeight();
+
             // Stage 객체 생성
             Stage stage = new Stage(this, row, col);
 
@@ -24,8 +32,8 @@ namespace Match3.Stage
             {
                 for(int nCol = 0; nCol < col; nCol++)
                 {
-                    stage.blocks[nRow, nCol] = SpawnBlockForStage(nRow, nCol, tilemap2D);
                     stage.cells[nRow, nCol] = SpawnCellForStage(nRow, nCol, tilemap2D);
+                    stage.blocks[nRow, nCol] = SpawnBlockForStage(nRow, nCol, tilemap2D);
                 }
             }
 
@@ -35,16 +43,17 @@ namespace Match3.Stage
 
         Block SpawnBlockForStage(int row, int col, G_TileMap2D tilemap2D)
         {
-            _eTileType cellType = (_eTileType)Match3.Stage.StageController._data._mapData[row * tilemap2D.GetWidth() + col];
-            if (cellType == _eTileType.GRASS || cellType == _eTileType.EMPTY)
-            {
-                return new Block(_eBlockType.EMPTY);
-            }
-            else
-            {
-                return new Block(_eBlockType.BASIC);
-            }
-            //return new Block(_eBlockType.BASIC);
+            //_eTileType cellType = (_eTileType)Match3.Stage.StageController._data._mapData[row * tilemap2D.GetWidth() + col];
+            //if (cellType == _eTileType.GRASS || cellType == _eTileType.EMPTY)
+            //{
+            //    return new Block(_eBlockType.EMPTY);
+            //}
+            //else
+            //{
+            //    return new Block(_eBlockType.BASIC);
+            //}
+
+            return tilemap2D.tileMapBlocks[row, col].GetComponent<Block>();
         }
 
         // tilemap2D에 있는 데이터를 불러와 셀 생성
@@ -56,15 +65,15 @@ namespace Match3.Stage
 
         // StageBuilder 생성
         // Stage를 구성하는 cell, block을 생성하는 ComposeStage를 호출하여 Stage 생성
-        public static Stage BuildStage(int nStage, int row, int col, G_TileMap2D tilemap2D)
+        public static Stage BuildStage(int nStage, G_TileMap2D tilemap2D)
         {
             StageBuilder stageBuilder = new StageBuilder(nStage);   // 0번 스테이지 생성
             if(stageBuilder == null)
             {
                 Debug.Log("스테이지 빌더가 없음");
             }
-            Stage stage = stageBuilder.ComposeStage(row, col, tilemap2D);
-
+            Stage stage = stageBuilder.ComposeStage(tilemap2D);
+                       
             return stage;
         }
     }
