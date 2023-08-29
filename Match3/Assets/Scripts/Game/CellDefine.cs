@@ -17,13 +17,13 @@ namespace Match3.Board
     static class CellTypeMethod
     {
         // 블럭이 위치할 수 있는 타입인지 체크
-        public static bool IsBlockAllocatableType(_eTileType type)
+        public static bool IsBlockAllocatableType(this _eTileType type)
         {
             return (type == _eTileType.NORMAL);
         }
 
         // 블럭이 이동 가능한 타입인지 체크
-        public static bool IsBlockMovableType(_eTileType type)
+        public static bool IsBlockMovableType(this _eTileType type)
         {
             return (type == _eTileType.NORMAL);
         }

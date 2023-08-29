@@ -92,7 +92,7 @@ namespace Match3.Board
         // 지정된 위치에 NORMAL 타입 셀인 경우 true 반환
         public bool CanShuffle(int nRow, int nCol, bool loading)
         {
-            if (_cells[nRow, nCol].type != _eTileType.NORMAL)
+            if (!_cells[nRow, nCol].type.IsBlockMovableType())
             {
                 return false;
             }

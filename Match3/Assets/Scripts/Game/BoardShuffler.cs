@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Match3.Board
 {
-    using BlockVectorKV = KeyValuePair<Block, Vector2Int>;     // Block, Vector2Int로 구성된 KVP를 BlockVectorKV로 타입 재정의
+    using BlockVectorKV = KeyValuePair<Block, Vector2Int>;     // Block, Vector2Int로 구성된 KVP를 BlockVectorKV로 using을 사용하여 타입 재정의
     public class BoardShuffler
     {
         Board _board;
@@ -23,9 +23,9 @@ namespace Match3.Board
 
         public void Shuffle(bool animation = false)
         {
-            PrepareDuplicationData();
-            PrepareShuffleBlocks();
-            RunShuffle(animation);
+            PrepareDuplicationData();               // 셔플 시작 전에 각 블럭의 매칭 정보를 업데이트
+            PrepareShuffleBlocks();                 // 셔플 대상 블럭을 리스트에 보관
+            RunShuffle(animation);                  // 위에서 준비한 데이터로 셔플 실행
         }
 
         void PrepareDuplicationData()
@@ -46,12 +46,13 @@ namespace Match3.Board
                         block.ResetDuplicationInfo();               // 셔플 가능한 셀이면 중복 갯수를 0으로 리셋하는 메서드
                     }
                     // 셔플할 수 없는 셀 검사, NORMAL 타입이 아닌 경우
+                    // 블럭이 밧줄 등에 갇혀서 일시적으로 이동하지 못하는 블럭 대상으로 검사
                     else
                     {
                         block.horzDuplicate = 1;
                         block.vertDuplicate = 1;
 
-                        // (nRow, nCol - 1)에 위치한 블럭과 (nRow, nCol)에 위치한 블럭 종류 비교, 가로 비교
+                        // (nRow, nCol - 1)에 위치한 블럭과 (nRow, nCol)에 위치한 블럭이 모두 셔플할 수 없는 셀이고 같은 블럭 종류인지 비교, 가로 비교
                         if (nCol > 0 && !_board.CanShuffle(nRow, nCol - 1, _loadingMode) && _board.blocks[nRow, nCol - 1].IsSafeEqual(block))
                         {
                             block.horzDuplicate = 2;                            // 가로 중복 카운트를 1에서 2로 증가
@@ -98,6 +99,7 @@ namespace Match3.Board
             _it = _orgBlocks.GetEnumerator();
         }
 
+        // 전체 블럭 섞기
         void RunShuffle(bool animation)
         {
             for (int nRow = 0; nRow < _board._Row; nRow++)
@@ -115,18 +117,21 @@ namespace Match3.Board
             }
         }
 
+        // row, col 좌표에 배치할 수 있는 블럭을 가지고 오기
         Block GetShuffleBlock(int nRow, int nCol)
         {
             _eBlockBreed prevBreed = _eBlockBreed.NONE;
             Block firstBlock = null;
 
             int i = 0;
-            bool useQueue = true;
+            bool useQueue = true;               // _UnusedBlocks에서 가져오면 true, _it에서 가져오면 false
             while(true || i < 1000)
             {
+                // _UnusedBlocks 큐에서 블록 꺼내기
                 BlockVectorKV blockInfo = NextBlock(useQueue);
                 Block block = blockInfo.Key;
 
+                // 큐에서 꺼낸 블록이 없는 경우 다시 한번 더 큐에서 블록을 찾음
                 if(block == null)
                 {
                     blockInfo = NextBlock(true);
@@ -142,9 +147,10 @@ namespace Match3.Board
 
                 if(_listComplete)
                 {
+
                     if(firstBlock == null)
                     {
-                        firstBlock = block;
+                        firstBlock = block;         // 큐에서 꺼낸 첫번째 블럭
                     }
                     else if(ReferenceEquals(firstBlock, block))
                     {
