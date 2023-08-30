@@ -11,8 +11,8 @@ namespace Match3.Board
         bool _loadingMode;  // 씬이 시작된 후 보드 구성시 호출되면 true, 플레이 도중에 호출되면 false
 
         SortedList<int, BlockVectorKV> _orgBlocks = new SortedList<int, BlockVectorKV>();   // 블럭을 섞기 위해 사용하는 SortedList, 리스트에 담으면서 1차로 블럭 셔플
-        IEnumerator<KeyValuePair<int, BlockVectorKV>> _it;                                  // SortedList에서 블럭을 하나씩 꺼내는데 사용
-        Queue<BlockVectorKV> _UnusedBlocks = new Queue<BlockVectorKV>();                    // 블럭 배치 과정 중에 3매치 발생한 블럭
+        IEnumerator<KeyValuePair<int, BlockVectorKV>> _it;                                  // SortedList에서 블럭을 하나씩 꺼내는데 사용하는 Enumerator
+        Queue<BlockVectorKV> _UnusedBlocks = new Queue<BlockVectorKV>();                    // 블럭 배치 과정 중에 3매치 발생한 블럭을 임시 보관하는 큐
         bool _listComplete;                                                                 // SortedList에서 조회할 블럭이 남아 있으면 true, 큐에 남은 블럭을 처리하는 중이면 false
 
         public BoardShuffler(Board board, bool loadingMode)
@@ -26,6 +26,8 @@ namespace Match3.Board
             PrepareDuplicationData();               // 셔플 시작 전에 각 블럭의 매칭 정보를 업데이트
             PrepareShuffleBlocks();                 // 셔플 대상 블럭을 리스트에 보관
             RunShuffle(animation);                  // 위에서 준비한 데이터로 셔플 실행
+
+            Debug.Log("셔플 완료");
         }
 
         void PrepareDuplicationData()
@@ -76,7 +78,7 @@ namespace Match3.Board
             {
                 for (int nCol = 0; nCol < _board._Col; nCol++)
                 {
-                    // 셔플할 수 없는 셀이면 실행하지 않음 
+                    // 셔플할 수 없는 셀이면 실행하지 않음, 리스트에 보관하지 않음
                     if(!_board.CanShuffle(nRow, nCol, _loadingMode))
                     {
                         continue;
@@ -112,7 +114,7 @@ namespace Match3.Board
                         continue;
                     }
 
-                    _board.blocks[nRow, nCol] = GetShuffleBlock(nRow, nCol);
+                    _board.blocks[nRow, nCol] = GetShuffleBlock(nRow, nCol);        // 셔플 대상 블럭은 새로 배치할 블럭을 받아 와서 저장
                 }
             }
         }
@@ -121,13 +123,13 @@ namespace Match3.Board
         Block GetShuffleBlock(int nRow, int nCol)
         {
             _eBlockBreed prevBreed = _eBlockBreed.NONE;
-            Block firstBlock = null;
+            Block firstBlock = null;            // 리스트를 전부 처리하고 UnusedBlocks 큐에만 블럭이 있는 경우 중복 체크를 위해 사용, 큐에서 꺼낸 첫번째 블럭
 
-            int i = 0;
+            //int i = 0;
             bool useQueue = true;               // _UnusedBlocks에서 가져오면 true, _it에서 가져오면 false
-            while(true || i < 1000)
+            while(true)    //  || i < 1000
             {
-                // _UnusedBlocks 큐에서 블록 꺼내기
+                // _UnusedBlocks 큐에서 블록 꺼내기, 첫번째 후보
                 BlockVectorKV blockInfo = NextBlock(useQueue);
                 Block block = blockInfo.Key;
 
@@ -138,16 +140,16 @@ namespace Match3.Board
                     block = blockInfo.Key;
                 }
 
-                Debug.Assert(block != null, $"Block Can't Be Null : queue count -> {_UnusedBlocks.Count}");
+                Debug.Assert(block != null, $"Block Can't Be Null : queue count -> {_UnusedBlocks.Count}");     // 블럭이 null이면 로그 출력 (큐가 비어 있음)
 
                 if(prevBreed == _eBlockBreed.NONE)
                 {
                     prevBreed = block.breed;
                 }
 
+                // 리스트를 모두 처리한 경우
                 if(_listComplete)
                 {
-
                     if(firstBlock == null)
                     {
                         firstBlock = block;         // 큐에서 꺼낸 첫번째 블럭
@@ -160,7 +162,7 @@ namespace Match3.Board
 
                 Vector2Int vtDup = CalcDuplications(nRow, nCol, block);
 
-                i++;
+                //i++;
 
                 if (vtDup.x > 2 || vtDup.y > 2)
                 {
@@ -182,8 +184,8 @@ namespace Match3.Board
                 return block;
             }
 
-            Debug.Log(i.ToString());
-            return null;
+            //Debug.Log(i.ToString());
+            //return null;
         }
 
         BlockVectorKV NextBlock(bool useQueue)      // useQueue가 true면 큐에서 블럭을 꺼내고 false면 리스트에서 블럭을 꺼내서 리턴

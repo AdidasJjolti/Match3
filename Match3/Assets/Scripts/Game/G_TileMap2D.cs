@@ -11,6 +11,9 @@ public class G_TileMap2D : MonoBehaviour
     int _width;
     int _height;
 
+    int _IDXcell = 0;
+    int _IDXblock = 0;
+
     GameObject[,] _tileMapCells;
     public GameObject[,] tileMapCells
     {
@@ -43,10 +46,10 @@ public class G_TileMap2D : MonoBehaviour
 
         for (int y = 0; y < _height; ++y)
         {
-            for(int x = 0; x < _width; ++x)
+            for (int x = 0; x < _width; ++x)
             {
                 int index = y * _width + x;   // 왼쪽 상단부터 오른쪽 하단까지 번호 지정 (0, 1, 2, ...)
-                if(mapData._mapData[index] == (int)_eTileType.EMPTY)   // EMPTY 타일이면 생성하지 않음
+                if (mapData._mapData[index] == (int)_eTileType.EMPTY)   // EMPTY 타일이면 생성하지 않음
                 {
                     continue;
                 }
@@ -57,37 +60,44 @@ public class G_TileMap2D : MonoBehaviour
                 if (mapData._mapData[index] > (int)_eTileType.EMPTY)   // EMPTY 타일이 아니면 자리마다 타일 생성
                 {
                     SpawnTile((_eTileType)mapData._mapData[index], position, x, y);
-                    SpawnBlock(_eBlockType.EMPTY, position, x, y);
                 }
 
-                if(mapData._mapData[index] == (int)_eTileType.NORMAL)  // NORMAL 타일인 곳에만 블럭 생성
+                if (mapData._mapData[index] == (int)_eTileType.NORMAL)  // NORMAL 타일인 곳에만 NORMAL 블럭 생성
                 {
                     SpawnBlock(_eBlockType.BASIC, position, x, y);
                 }
+                else
+                {
+                    SpawnBlock(_eBlockType.EMPTY, position, x, y);
+                }
             }
         }
+
+        Debug.Log("맵 생성 완료");
     }
 
     void SpawnTile(_eTileType tileType, Vector3 position, int x, int y)
     {
         GameObject clone = Instantiate(_tilePrefab, position, Quaternion.identity);
-        clone.name = "Tile";
+        clone.name = "Tile" + _IDXcell.ToString();
         clone.transform.SetParent(transform);
 
         Tile tile = clone.GetComponent<Tile>();
         tile.Setup(tileType);     // 생성한 clone 오브젝트의 Setup 함수 호출
 
         _tileMapCells[x, y] = clone;
+        _IDXcell++;
     }
 
     void SpawnBlock(_eBlockType blockType, Vector3 position, int x, int y)
     {
         GameObject clone = Instantiate(_blockPrefab, position, Quaternion.identity);
-        clone.name = "Block";
+        clone.name = "Block" + _IDXblock.ToString();
         clone.transform.SetParent(transform);
         clone.GetComponent<Block>().type = blockType;
 
         _tileMapBlocks[x, y] = clone;
+        _IDXblock++;
     }
 
     public int GetWidth()
