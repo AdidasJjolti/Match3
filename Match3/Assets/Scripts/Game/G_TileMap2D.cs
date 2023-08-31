@@ -98,6 +98,8 @@ public class G_TileMap2D : MonoBehaviour
 
         _tileMapBlocks[x, y] = clone;
         _IDXblock++;
+
+        clone.GetComponent<BlockBehaviour>().UpdateView(false);
     }
 
     public int GetWidth()

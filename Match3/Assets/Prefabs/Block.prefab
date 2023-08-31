@@ -98,6 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cf406fcf10efb847b27358ad7b52f2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _block: {fileID: 2174069427905515297}
+  _renderer: {fileID: 2100474234378563104}
   _blockConfig: {fileID: 11400000, guid: 2895f21965bc9d444a69134166ed63eb, type: 2}
 --- !u!114 &2174069427905515297
 MonoBehaviour:
@@ -112,3 +114,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _blockType: 1
+  _breed: 0
