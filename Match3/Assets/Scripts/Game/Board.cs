@@ -63,17 +63,6 @@ namespace Match3.Board
         {
             _container = container;
             
-            //for(int i = 0; i < _Row; i++)
-            //{
-            //    for (int j = 0; j < _Col; j++)
-            //    {
-            //        if(_blocks[i,j].GetComponent<Block>())
-            //        {
-            //            Debug.Log($"{i}, {j} : Valid Block");
-            //        }
-            //    }
-            //}
-            
             BoardShuffler shuffler = new BoardShuffler(this, true);
             shuffler.Shuffle();
         }
@@ -118,6 +107,11 @@ namespace Match3.Board
 
             // 새로운 breed를 설정
             block.breed = genBreed;
+        }
+
+        public bool IsSwipeable(int nRow, int nCol)
+        {
+            return _cells[nRow, nCol].type.IsBlockMovableType();    // 움직일 수 있는 블럭인 경우 스와이프 가능하므로 true 반환
         }
     }
 }

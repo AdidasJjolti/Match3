@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Match3.Board;
+using Util;
 
 namespace Match3.Stage
 {
@@ -80,6 +81,30 @@ namespace Match3.Stage
             Debug.Log(strBlocks.ToString());
         }
         
+        public bool IsOnValideBlock(Vector2 point, out BlockPos blockPos)       // point : 보드 기준 로컬 좌표, blockPos : point 좌표에 위치한 블럭의 위치 정보를 호출자에게 전달
+        {
+            // 로컬 좌표를 보드의 블럭 인덱스로 변환
+            Vector2 pos = new Vector2(point.x + (_Col / 2.0f), point.y + (_Row / 2.0f));
+            int nRow = (int)pos.y;
+            int nCol = (int)pos.x;
+
+            blockPos = new BlockPos(nRow, nCol);        // 호출자에게 전달할 out 파라미터 설정
+
+            return _board.IsSwipeable(nRow, nCol);      // 스와이프 가능한 유효한 블럭인지 판단
+        }
+
+        public bool IsInsideBoard(Vector2 ptOrg)        // ptOrg : 보드 기준 로컬 좌표
+        {
+            // 10x10 보드인 경우, 0 ~ 10 사이의 좌표로 변환
+            Vector2 point = new Vector2(ptOrg.x + (_Col / 2.0f), ptOrg.y + (_Row / 2.0f));
+
+            if(point.y < 0 || point.x < 0 || point.y > _Row || point.x > _Col)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
 

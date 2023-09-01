@@ -34,7 +34,7 @@ namespace Match3.Board
             }
             else
             {
-                _block.breed = (_eBlockBreed)Random.Range(0, 6);
+                _block.breed = (_eBlockBreed)Random.Range(0, (int)_eBlockBreed.MAX);
                 _renderer.sprite = _blockConfig.basicBlockSprites[(int)_block.breed];
             }
 

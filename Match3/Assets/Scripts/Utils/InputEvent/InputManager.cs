@@ -31,5 +31,10 @@ namespace Util
 
             return vtContainerLocal;
         }
+
+        public _eSwipe EvalSwipeDir(Vector2 vtStart, Vector2 vtEnd)
+        {
+            return TouchEvaluator.EvalSwipeDir(vtStart, vtEnd);     // TouchEvaluator 클래스로 전달하여 값을 반환
+        }
     }
 }
