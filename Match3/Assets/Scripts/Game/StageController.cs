@@ -20,6 +20,8 @@ namespace Match3.Stage
         BlockPos _blockDownPos;     //보드에 저장된 블럭의 위치
         Vector3 _clickPos;          //보드 기준 로컬 좌표로 표현한 Down 위치
 
+        ActionManager _actionManager;
+
         void Awake()
         {
             MapDataLoader _mapDataLoader = new MapDataLoader();
@@ -62,6 +64,7 @@ namespace Match3.Stage
         void BuildStage()
         {
             _stage = StageBuilder.BuildStage(nStage : _stageNumber, _tilemap2D);
+            _actionManager = new ActionManager(_tilemap2D.transform, _stage);
 
             if (_stage != null)
             {
@@ -100,6 +103,11 @@ namespace Match3.Stage
                 Vector2 point = _inputManager._touch2BoardPosition;
                 _eSwipe swipeDir = _inputManager.EvalSwipeDir(_clickPos, point);
                 Debug.Log($"Swipe = {swipeDir}, Block = {_blockDownPos}");
+
+                if(swipeDir != _eSwipe.NONE)
+                {
+                    _actionManager.DoSwipeAction(_blockDownPos.row, _blockDownPos.col, swipeDir);       // 스와이프 액션 요청
+                }
 
                 _isTouchDown = false;
             }

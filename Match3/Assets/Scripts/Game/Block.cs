@@ -27,7 +27,7 @@ namespace Match3.Board
             _blockType = blockType;
         }
 
-        protected BlockBehaviour _blockBehaviour;
+        [SerializeField] protected BlockBehaviour _blockBehaviour;
         public BlockBehaviour blockBehaviour
         {
             get
@@ -58,7 +58,7 @@ namespace Match3.Board
             set
             {
                 _breed = value;
-                _blockBehaviour?.UpdateView(true);      // breed 값이 set되는 경우 블럭 스프라이트 변경
+                //_blockBehaviour?.UpdateView(true);      // breed 값이 set되는 경우 블럭 스프라이트 변경
             }
         }
 
@@ -120,6 +120,17 @@ namespace Match3.Board
         public bool IsMatchableBlock()
         {
             return (type == _eBlockType.BASIC);
+        }
+
+        // to의 위치로 블럭을 이동하는 메서드
+        public void MoveTo(Vector3 to, float duration)
+        {
+            _blockBehaviour.StartCoroutine(Util.Action2D.MoveTo(blockObj, to, duration));
+        }
+
+        public bool IsSwipeable(Block baseBlock)
+        {
+            return true;
         }
     }
 }

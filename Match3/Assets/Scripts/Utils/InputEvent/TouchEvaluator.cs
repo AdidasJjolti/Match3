@@ -63,4 +63,33 @@ namespace Util
             return aimAngle * Mathf.Rad2Deg;
         }
     }
+
+    public static class SwipeDirMethod
+    {
+        public static int GetTargetRow(this _eSwipe swipeDir)
+        {
+            switch (swipeDir)
+            {
+                case _eSwipe.DOWN:
+                    return 1;
+                case _eSwipe.UP:
+                    return -1;
+                default:
+                    return 0;
+            }
+        }
+
+        public static int GetTargetCol(this _eSwipe swipeDir)
+        {
+            switch (swipeDir)
+            {
+                case _eSwipe.LEFT:
+                    return -1;
+                case _eSwipe.RIGHT:
+                    return 1;
+                default:
+                    return 0;
+            }
+        }
+    }
 }

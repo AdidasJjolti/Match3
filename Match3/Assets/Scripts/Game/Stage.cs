@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using Match3.Board;
 using Util;
+using Match3.Core;
 
 namespace Match3.Stage
 {
@@ -84,9 +85,9 @@ namespace Match3.Stage
         public bool IsOnValideBlock(Vector2 point, out BlockPos blockPos)       // point : 보드 기준 로컬 좌표, blockPos : point 좌표에 위치한 블럭의 위치 정보를 호출자에게 전달
         {
             // 로컬 좌표를 보드의 블럭 인덱스로 변환
-            Vector2 pos = new Vector2(point.x + (_Col / 2.0f), point.y + (_Row / 2.0f));
-            int nRow = (int)pos.y;
-            int nCol = (int)pos.x;
+            Vector2 pos = new Vector2(point.x + (_Col / 2.0f), point.y * -1 + (_Row / 2.0f));
+            int nRow = (int)pos.x;
+            int nCol = (int)pos.y;
 
             blockPos = new BlockPos(nRow, nCol);        // 호출자에게 전달할 out 파라미터 설정
 
@@ -104,6 +105,63 @@ namespace Match3.Stage
             }
 
             return true;
+        }
+
+        public IEnumerator CoDoSwipeAction(int nRow, int nCol, _eSwipe swipeDir, Returnable<bool> actionResult)
+        {
+            actionResult.value = false;
+
+            // 스와이프되는 블럭의 위치 구하기
+            int nSwipeRow = nRow, nSwipeCol = nCol;
+            nSwipeRow += swipeDir.GetTargetCol();
+            nSwipeCol += swipeDir.GetTargetRow();
+
+            Debug.Assert(nRow != nSwipeRow || nCol != nSwipeCol, $"Invalid Swipe : ({nSwipeRow}, {nSwipeCol})");        // 스와이프 되는 블럭의 위치가 클릭 위치와 같은 경우 실행하지 않음
+            Debug.Assert(nSwipeRow >= 0 && nSwipeRow < _Row && nSwipeCol >= 0 && nSwipeCol < _Col, $"Swipe 타겟 블럭 인덱스 오류 = ({nSwipeRow}, {nSwipeCol})");
+
+            if(_board.IsSwipeable(nSwipeRow, nSwipeCol))
+            {
+                Block targetBlock = blocks[nSwipeRow, nSwipeCol];
+                Block baseBlock = blocks[nRow, nCol];
+                Debug.Assert(baseBlock != null && targetBlock != null);
+
+                Vector3 basePos = baseBlock.blockObj.transform.position;
+                Vector3 targetPos = targetBlock.blockObj.transform.position;
+
+                if(targetBlock.IsSwipeable(baseBlock))
+                {
+                    // baseBlock과 targetBlock의 위치 변경
+                    baseBlock.MoveTo(targetPos, Constants.SWIPE_DURATION);
+                    targetBlock.MoveTo(basePos, Constants.SWIPE_DURATION);
+
+                    yield return new WaitForSeconds(Constants.SWIPE_DURATION);
+
+                    blocks[nRow, nCol] = targetBlock;
+                    blocks[nSwipeRow, nSwipeCol] = baseBlock;
+
+                    actionResult.value = true;
+                }
+            }
+
+            yield break;
+        }
+
+        // 유효한 스와이프 액션인지 체크
+        public bool IsValideSwipe(int nRow, int nCol, _eSwipe swipeDir)
+        {
+            switch(swipeDir)
+            {
+                case _eSwipe.DOWN:
+                    return nRow > 0;            // 터치한 블럭이 밑에서 첫번째 행이 아니면 유효
+                case _eSwipe.UP:
+                    return nRow < _Row - 1;     // 터치한 블럭이 위에서 첫번째 행이 아니면 유효
+                case _eSwipe.LEFT:
+                    return nCol > 0;            // 터치한 블럭이 가장 왼쪽 열이 아니면 유효
+                case _eSwipe.RIGHT:
+                    return nCol < _Col - 1;     // 터치한 블럭이 가장 오른쪽 열이 아니면 유효
+                default:
+                    return false;
+            }
         }
     }
 }
