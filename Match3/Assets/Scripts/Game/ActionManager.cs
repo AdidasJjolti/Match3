@@ -10,7 +10,7 @@ namespace Match3.Stage
         Transform _container;
         Stage _stage;
         MonoBehaviour _monoBehaviour;
-        bool _isRunning;                // 스와이프 액셜 실행 상태
+        bool _isRunning;                // 스와이프 액션 실행 상태
 
         public ActionManager(Transform container, Stage stage)
         {
@@ -44,10 +44,28 @@ namespace Match3.Stage
                 Returnable<bool> swipedBlock = new Returnable<bool>(false);             // 코루틴 실행 결과를 전달받을 Returnable 객체 생성
                 yield return _stage.CoDoSwipeAction(nRow, nCol, swipeDir, swipedBlock);
 
+                if(swipedBlock.value)
+                {
+                    Returnable<bool> matchBlock = new Returnable<bool>(false);
+                    yield return EvaluateBoard(matchBlock);
+
+                    // 스와이프한 블럭이 매치되지 않는 경우 원상태로 복귀
+                    if(matchBlock.value)
+                    {
+                        yield return _stage.CoDoSwipeAction(nRow, nCol, swipeDir, swipedBlock);
+                    }
+                }
+
                 _isRunning = false;
             }
 
             yield break;
+        }
+
+        // 3매치 블럭 삭제, 빈블럭 자리에 새 블럭 드랍 실행
+        IEnumerator EvaluateBoard(Returnable<bool> matchResult)
+        {
+            yield return _stage.Evaluate(matchResult);
         }
     }
 }

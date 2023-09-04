@@ -66,6 +66,7 @@ namespace Util
 
     public static class SwipeDirMethod
     {
+        // 스와이프 액션에 따라 대상 블럭의 위치 offset 결정
         public static int GetTargetRow(this _eSwipe swipeDir)
         {
             switch (swipeDir)
@@ -79,6 +80,7 @@ namespace Util
             }
         }
 
+        // 스와이프 액션에 따라 대상 블럭의 위치 offset 결정
         public static int GetTargetCol(this _eSwipe swipeDir)
         {
             switch (swipeDir)

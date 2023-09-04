@@ -109,7 +109,7 @@ namespace Match3.Stage
 
         public IEnumerator CoDoSwipeAction(int nRow, int nCol, _eSwipe swipeDir, Returnable<bool> actionResult)
         {
-            actionResult.value = false;
+            actionResult.value = false;     // 코루틴 리턴값 리셋
 
             // 스와이프되는 블럭의 위치 구하기
             int nSwipeRow = nRow, nSwipeCol = nCol;
@@ -125,6 +125,7 @@ namespace Match3.Stage
                 Block baseBlock = blocks[nRow, nCol];
                 Debug.Assert(baseBlock != null && targetBlock != null);
 
+                // 스와이프 대상(targetBlock)과 스와이프 시작점(baseBlock)의 좌표 저장
                 Vector3 basePos = baseBlock.blockObj.transform.position;
                 Vector3 targetPos = targetBlock.blockObj.transform.position;
 
@@ -136,10 +137,13 @@ namespace Match3.Stage
 
                     yield return new WaitForSeconds(Constants.SWIPE_DURATION);
 
+                    // 스와이프 대상 블럭과 시작 블럭의 블럭 인덱스 교체
+                    // nRow, nCol : 시작 블럭의 인덱스
+                    // nSwipeRow, nSwipeCol : 대상 블럭의 인덱스
                     blocks[nRow, nCol] = targetBlock;
                     blocks[nSwipeRow, nSwipeCol] = baseBlock;
 
-                    actionResult.value = true;
+                    actionResult.value = true;      // 스와이프 실행 결과 반환
                 }
             }
 
@@ -162,6 +166,11 @@ namespace Match3.Stage
                 default:
                     return false;
             }
+        }
+
+        public IEnumerator Evaluate(Returnable<bool> matchResult)
+        {
+            yield return _board.Evaluate(matchResult);
         }
     }
 }

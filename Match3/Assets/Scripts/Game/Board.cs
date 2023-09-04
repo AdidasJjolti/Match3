@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Quest;
+using Util;
 
 namespace Match3.Board
 {
@@ -9,6 +11,8 @@ namespace Match3.Board
         int _row;
         int _col;
         Transform _container;
+
+        BoardEnumerator _enumerator;
 
         // 플레이할 게임판의 행, 열 저장
         public int _Row
@@ -57,6 +61,8 @@ namespace Match3.Board
             // Cell, Block 각각의 2차원 배열을 생성
             _cells = new Cell[row, col];
             _blocks = new Block[row, col];
+
+            _enumerator = new BoardEnumerator(this);
         }
 
         internal void ComposeStage(Transform container = null)
@@ -112,6 +118,60 @@ namespace Match3.Board
         public bool IsSwipeable(int nRow, int nCol)
         {
             return _cells[nRow, nCol].type.IsBlockMovableType();    // 움직일 수 있는 블럭인 경우 스와이프 가능하므로 true 반환
+        }
+
+        public IEnumerator Evaluate(Returnable<bool> matchResult)
+        {
+            bool matchedBlockFound = UpdateAllBlocksMathcedStatus();        // 3매치 블럭이 있으면 true 반환
+
+            if(matchedBlockFound == false)
+            {
+                matchResult.value = false;
+                yield break;
+            }
+
+            for(int nRow = 0; nRow < _Row; nRow++)
+            {
+                for(int nCol = 0; nCol < _Col; nCol++)
+                {
+                    Block block = _blocks[nRow, nCol];
+                    block?.DoEvaluation(_enumerator, nRow, nCol);
+
+                    if(block != null)
+                    {
+                        if(block.status == BlockStatus.CLEAR)
+                        {
+                            clearBlocks.Add(block);
+                            _blocks[nRow, nCol] == null;
+                        }
+                    }
+                }
+            }
+
+            clearBlocks.ForEach((block) => block.Destroy());
+            matchResult.value = true;
+
+            yield break;
+        }
+
+        // 3매치 블럭이 있는지 체크
+        public bool UpdateAllBlocksMathcedStatus()
+        {
+            List<Block> matchedBlockList = new List<Block>();
+            int count = 0;
+
+            for (int nRow = 0; nRow < _Row; nRow++)
+            {
+                for (int nCol = 0; nCol < _Col; nCol++)
+                {
+                    if (EvalBlocksIfMatched(nRow, nCol, matchedBlockList))
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            return count > 0;
         }
     }
 }
