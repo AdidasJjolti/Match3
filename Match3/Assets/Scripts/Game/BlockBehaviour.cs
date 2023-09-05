@@ -40,6 +40,11 @@ namespace Match3.Board
 
             Debug.Log("블럭 종류 설정 완료");
         }
+
+        public void DoActionClear()
+        {
+            Destroy(gameObject);
+        }
     }
 }
 

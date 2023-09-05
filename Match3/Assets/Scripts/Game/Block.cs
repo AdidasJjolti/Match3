@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Quest;
 
 
 namespace Match3.Board
 {
     public class Block : MonoBehaviour
     {
+        #region TypeCheck
         [SerializeField] protected _eBlockType _blockType;
         public _eBlockType type
         {
@@ -25,8 +26,18 @@ namespace Match3.Board
         public Block(_eBlockType blockType)
         {
             _blockType = blockType;
+
+            _status = _eBlockStatus.NORMAL;
+            _questType = _eBlockQuestType.CLEAR_SIMPLE;
+            _match = _eMatchType.NONE;
+            _breed = _eBlockBreed.NONE;
+
+            _durability = 1;
         }
 
+        #endregion
+
+        #region BlockBehaviour
         [SerializeField] protected BlockBehaviour _blockBehaviour;
         public BlockBehaviour blockBehaviour
         {
@@ -46,7 +57,10 @@ namespace Match3.Board
         {
             this.transform.position = new Vector3(x, y);
         }
+        #endregion
 
+
+        #region BreedCheck
         public _eBlockBreed _breed;
         public _eBlockBreed breed
         {
@@ -115,7 +129,9 @@ namespace Match3.Board
 
             return false;
         }
+        #endregion
 
+        #region SwipeAction
         // 3매치 대상이 되는 블럭인지 검사, EMPTY 타입이 아닌 블럭 검사
         public bool IsMatchableBlock()
         {
@@ -132,6 +148,105 @@ namespace Match3.Board
         {
             return true;
         }
+        #endregion
+
+        #region MatchCheck
+        public _eBlockStatus _status;
+        public _eBlockQuestType _questType;
+        public _eMatchType _match = _eMatchType.NONE;
+        public short _matchCount;
+
+        [SerializeField] int _durability;
+        public virtual int durability
+        {
+            get
+            {
+                return _durability;
+            }
+
+            set
+            {
+                _durability = value;
+            }
+        }
+
+        public bool DoEvaluation(BoardEnumerator boardEnumerator, int nRow, int nCol)
+        {
+            Debug.Assert(boardEnumerator != null, $"({nRow},{nCol})");
+
+            if(!IsEvaluatable())
+            {
+                return false;
+            }
+
+            if(_status == _eBlockStatus.MATCH)
+            {
+                if(_questType == _eBlockQuestType.CLEAR_SIMPLE || boardEnumerator.IsCageTypeCell(nRow, nCol))
+                {
+                    Debug.Assert(_durability > 0, $"durability is zero : {_durability}");
+                    _durability--;
+                }
+                else
+                {
+                    return true;
+                }
+
+                if (_durability == 0)
+                {
+                    _status = _eBlockStatus.CLEAR;
+                    return false;
+                }
+            }
+
+            _status = _eBlockStatus.NORMAL;
+            _match = _eMatchType.NONE;
+            _matchCount = 0;
+
+            return false;
+        }
+
+        public void UpdateBlockStatusMatched(_eMatchType matchType, bool accumulate = true)
+        {
+            this._status = _eBlockStatus.MATCH;
+
+            if(_match == _eMatchType.NONE)
+            {
+                this._match = matchType;
+            }
+            else
+            {
+                this._match = accumulate ? _match.Add(matchType) : matchType;
+            }
+        }
+
+        public bool IsEvaluatable()
+        {
+            // 이미 클리어 처리 되었거나 현재 처리중인 블럭인 경우 false 반환
+            if(_status == _eBlockStatus.CLEAR || !IsMatchableBlock())
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 유효한 블럭인지 체크한다.
+        /// EMPTY 타입을 제외하고 모든 블럭이 유효한 것으로 간주한다.
+        /// Block GameObject 생성 등의 판단에 사용된다.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsValidate()
+        {
+            return type != _eBlockType.EMPTY;
+        }
+
+        public virtual void Destroy()
+        {
+            Debug.Assert(blockObj != null, $"{_match}");
+            _blockBehaviour.DoActionClear();
+        }
+        #endregion
     }
 }
 

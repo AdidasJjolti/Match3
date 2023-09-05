@@ -130,6 +130,8 @@ namespace Match3.Board
                 yield break;
             }
 
+            List<Block> clearBlocks = new List<Block>();
+
             for(int nRow = 0; nRow < _Row; nRow++)
             {
                 for(int nCol = 0; nCol < _Col; nCol++)
@@ -139,10 +141,10 @@ namespace Match3.Board
 
                     if(block != null)
                     {
-                        if(block.status == BlockStatus.CLEAR)
+                        if(block._status == _eBlockStatus.CLEAR)
                         {
                             clearBlocks.Add(block);
-                            _blocks[nRow, nCol] == null;
+                            _blocks[nRow, nCol] = null;
                         }
                     }
                 }
@@ -172,6 +174,100 @@ namespace Match3.Board
             }
 
             return count > 0;
+        }
+
+        public bool EvalBlocksIfMatched(int nRow, int nCol, List<Block> matchedBlockList)
+        {
+            bool found = false;
+            Block baseBlock = _blocks[nRow, nCol];
+
+            if(baseBlock == null)
+            {
+                return false;
+            }
+
+            if(baseBlock._match != _eMatchType.NONE || !baseBlock.IsValidate() || _cells[nRow, nCol].IsObstracle())
+            {
+                return false;
+            }
+
+            matchedBlockList.Add(baseBlock);
+
+            Block block;
+
+            // baseBlock 기준 우측 블럭 검사
+            for (int i = nCol + 1; i < nCol; i++)
+            {
+                block = _blocks[nRow, i];
+                if(!block.IsSafeEqual(baseBlock))
+                {
+                    break;
+                }
+
+                matchedBlockList.Add(block);
+            }
+
+            // baseBlock 기준 좌측 블럭 검사
+            for (int i = nCol - 1; i >= 0; i--)
+            {
+                block = _blocks[nRow, i];
+                if(!block.IsSafeEqual(baseBlock))
+                {
+                    break;
+                }
+
+                matchedBlockList.Insert(0, block);
+            }
+
+            if(matchedBlockList.Count >= 3)
+            {
+                SetBlockStatusMatched(matchedBlockList, true);
+                found = true;
+            }
+
+            matchedBlockList.Clear();
+
+            matchedBlockList.Add(baseBlock);
+
+            // baseBlock 기준 위쪽 블럭 검사
+            for (int i = nRow + 1; i < nRow; i++)
+            {
+                block = _blocks[i, nCol];
+                if (!block.IsSafeEqual(baseBlock))
+                {
+                    break;
+                }
+
+                matchedBlockList.Add(block);
+            }
+
+            // baseBlock 기준 아래쪽 블럭 검사
+            for (int i = nRow - 1; i >= 0; i--)
+            {
+                block = _blocks[i, nCol];
+                if (!block.IsSafeEqual(baseBlock))
+                {
+                    break;
+                }
+
+                matchedBlockList.Insert(0, block);
+            }
+
+            if (matchedBlockList.Count >= 3)
+            {
+                SetBlockStatusMatched(matchedBlockList, true);
+                found = true;
+            }
+
+            matchedBlockList.Clear();
+
+            return found;
+        }
+
+        void SetBlockStatusMatched(List<Block> blockList, bool horz)
+        {
+            int matchCount = blockList.Count;
+            blockList.ForEach(block => block.UpdateBlockStatusMatched((_eMatchType)matchCount));
         }
     }
 }

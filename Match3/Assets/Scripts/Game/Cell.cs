@@ -24,6 +24,11 @@ namespace Match3.Board
         {
             _tileType = tileType;
         }
+
+        public bool IsObstracle()
+        {
+            return _tileType == _eTileType.EMPTY;
+        }
     }
 }
 
