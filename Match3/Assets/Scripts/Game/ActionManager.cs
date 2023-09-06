@@ -50,7 +50,7 @@ namespace Match3.Stage
                     yield return EvaluateBoard(matchBlock);
 
                     // 스와이프한 블럭이 매치되지 않는 경우 원상태로 복귀
-                    if(matchBlock.value)
+                    if(!matchBlock.value)
                     {
                         yield return _stage.CoDoSwipeAction(nRow, nCol, swipeDir, swipedBlock);
                     }

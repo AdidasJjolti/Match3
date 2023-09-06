@@ -120,6 +120,7 @@ namespace Match3.Board
             return _cells[nRow, nCol].type.IsBlockMovableType();    // 움직일 수 있는 블럭인 경우 스와이프 가능하므로 true 반환
         }
 
+        // 3매치 판단하는 로직
         public IEnumerator Evaluate(Returnable<bool> matchResult)
         {
             bool matchedBlockFound = UpdateAllBlocksMathcedStatus();        // 3매치 블럭이 있으면 true 반환
@@ -168,7 +169,7 @@ namespace Match3.Board
                 {
                     if (EvalBlocksIfMatched(nRow, nCol, matchedBlockList))
                     {
-                        count++;
+                        count++;    // 매치되는 블럭이 생길때마다 count 증가
                     }
                 }
             }
@@ -176,6 +177,7 @@ namespace Match3.Board
             return count > 0;
         }
 
+        // 가로 또는 세로로 블럭 검사하여 매치되는 블럭이 하나라도 있으면 true 반환
         public bool EvalBlocksIfMatched(int nRow, int nCol, List<Block> matchedBlockList)
         {
             bool found = false;
@@ -255,7 +257,7 @@ namespace Match3.Board
 
             if (matchedBlockList.Count >= 3)
             {
-                SetBlockStatusMatched(matchedBlockList, true);
+                SetBlockStatusMatched(matchedBlockList, false);
                 found = true;
             }
 
@@ -264,10 +266,16 @@ namespace Match3.Board
             return found;
         }
 
-        void SetBlockStatusMatched(List<Block> blockList, bool horz)
+        void SetBlockStatusMatched(List<Block> blockList, bool horz)        // 3매치 블럭의 배치가 가로면 true, 세로면 false
         {
             int matchCount = blockList.Count;
             blockList.ForEach(block => block.UpdateBlockStatusMatched((_eMatchType)matchCount));
+            
+            // 위의 람다식과 동일한 코드
+            //foreach(var block in blockList)
+            //{
+            //    block.UpdateBlockStatusMatched((_eMatchType)matchCount);
+            //}
         }
     }
 }

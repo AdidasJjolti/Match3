@@ -94,7 +94,8 @@ public class G_TileMap2D : MonoBehaviour
         GameObject clone = Instantiate(_blockPrefab, position, Quaternion.identity);
         clone.name = "Block" + _IDXblock.ToString();
         clone.transform.SetParent(transform);
-        clone.GetComponent<Block>().type = blockType;
+        var block = clone.GetComponent<Block>();
+        block.Init(blockType);
 
         _tileMapBlocks[x, y] = clone;
         _IDXblock++;

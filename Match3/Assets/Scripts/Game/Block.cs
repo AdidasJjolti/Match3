@@ -23,8 +23,11 @@ namespace Match3.Board
             }
         }
 
+        bool _init = false;
         public Block(_eBlockType blockType)
         {
+            // 생성자 함수로 생성하면 Init 함수 호출하지 않음
+            _init = true;
             _blockType = blockType;
 
             _status = _eBlockStatus.NORMAL;
@@ -35,6 +38,23 @@ namespace Match3.Board
             _durability = 1;
         }
 
+        public void Init(_eBlockType blockType)
+        {
+            if(_init)
+            {
+                return;
+            }
+
+            _init = true;
+            _blockType = blockType;
+
+            _status = _eBlockStatus.NORMAL;
+            _questType = _eBlockQuestType.CLEAR_SIMPLE;
+            _match = _eMatchType.NONE;
+            _breed = _eBlockBreed.NONE;
+
+            _durability = 1;
+        }
         #endregion
 
         #region BlockBehaviour
@@ -170,6 +190,7 @@ namespace Match3.Board
             }
         }
 
+        // 3매치가 성립하여 CLEAR 할 수 있는 경우 이후 동작을 수행
         public bool DoEvaluation(BoardEnumerator boardEnumerator, int nRow, int nCol)
         {
             Debug.Assert(boardEnumerator != null, $"({nRow},{nCol})");
@@ -179,6 +200,7 @@ namespace Match3.Board
                 return false;
             }
 
+            // 매치 상태인 경우, CLEAR 할 수 있는 상태
             if(_status == _eBlockStatus.MATCH)
             {
                 if(_questType == _eBlockQuestType.CLEAR_SIMPLE || boardEnumerator.IsCageTypeCell(nRow, nCol))
@@ -215,7 +237,7 @@ namespace Match3.Board
             }
             else
             {
-                this._match = accumulate ? _match.Add(matchType) : matchType;
+                this._match = accumulate ? _match.Add(matchType) : matchType;       // _match의 정수값과 matchType 정수값을 더하여 _match에 새로운 _eMatchType 값을 할당
             }
         }
 

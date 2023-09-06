@@ -43,7 +43,7 @@ namespace Util
 
         public override string ToString()
         {
-            return $"(row = {row}, col = {col})";
+            return $"(row = {col}, col = {row})";   // 행렬 좌표 표기
         }
     }
 }
