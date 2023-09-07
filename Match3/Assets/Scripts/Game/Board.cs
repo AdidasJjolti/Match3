@@ -6,6 +6,7 @@ using Util;
 
 namespace Match3.Board
 {
+    using IntIntKV = KeyValuePair<int, int>;
     public class Board
     {
         int _row;
@@ -120,7 +121,7 @@ namespace Match3.Board
             return _cells[nRow, nCol].type.IsBlockMovableType();    // 움직일 수 있는 블럭인 경우 스와이프 가능하므로 true 반환
         }
 
-        // 3매치 판단하는 로직
+        // 3매치 블럭을 판단하여 제거하는 게임 규칙 실행
         public IEnumerator Evaluate(Returnable<bool> matchResult)
         {
             bool matchedBlockFound = UpdateAllBlocksMathcedStatus();        // 3매치 블럭이 있으면 true 반환
@@ -131,17 +132,18 @@ namespace Match3.Board
                 yield break;
             }
 
-            List<Block> clearBlocks = new List<Block>();
+            List<Block> clearBlocks = new List<Block>();        // 제거될 블럭을 저장하는 리스트
 
             for(int nRow = 0; nRow < _Row; nRow++)
             {
                 for(int nCol = 0; nCol < _Col; nCol++)
                 {
                     Block block = _blocks[nRow, nCol];
-                    block?.DoEvaluation(_enumerator, nRow, nCol);
+                    block?.DoEvaluation(_enumerator, nRow, nCol);       // 3매치가 되는 블럭인지 체크
 
                     if(block != null)
                     {
+                        // 클러어 가능한 블럭이면 제거될 블럭 리스트에 넣고 blocks 배열에서 제거
                         if(block._status == _eBlockStatus.CLEAR)
                         {
                             clearBlocks.Add(block);
@@ -151,6 +153,7 @@ namespace Match3.Board
                 }
             }
 
+            // 리스트에 있는 블럭 모두 제거
             clearBlocks.ForEach((block) => block.Destroy());
             matchResult.value = true;
 
@@ -276,6 +279,75 @@ namespace Match3.Board
             //{
             //    block.UpdateBlockStatusMatched((_eMatchType)matchCount);
             //}
+        }
+
+        public IEnumerator ArrangeBlocksAfterClean(List<IntIntKV> unfilledBlocks, List<Block> movingBlocks)
+        {
+            SortedList<int, int> emptyBlocks = new SortedList<int, int>();
+            List<IntIntKV> emptyRemainBlocks = new List<IntIntKV>();
+
+            for(int nCol = 0; nCol < _Col; nCol++)
+            {
+                emptyBlocks.Clear();
+
+                for(int nRow = 0; nRow < _Row; nRow++)
+                {
+                    if(CanBlockBeAllocatable(nRow, nCol))
+                    {
+                        emptyBlocks.Add(nRow, nCol);
+                    }
+                }
+
+                if(emptyBlocks.Count == 0)
+                {
+                    continue;
+                }
+
+                IntIntKV first = emptyBlocks.First();
+
+                for(int nRow = first.Value + 1; nRow < _Row; nRow++)
+                {
+                    Block block = _blocks[nRow, nCol];
+
+                    if(block == null || _cells[nRow, nCol].type == _eTileType.EMPTY)
+                    {
+                        continue;
+                    }
+
+                    block._dropDistance = new Vector2(0, nRow - first.Value);
+                    movingBlocks.Add(block);
+
+                    Debug.Assert(_cells[first.Value, nCol].IsObstracle() == false, $"{_cells[first.Value, nCol]}");
+                    _blocks[first.Value, nCol] = block;
+
+                    _blocks[nRow, nCol] = null;
+
+                    emptyBlocks.RemoveAt(0);
+                    emptyBlocks.Add(nRow, nCol);
+
+                    first = emptyBlocks.First();
+                    nRow = first.Value;
+                }
+            }
+
+            yield return null;
+
+            if(emptyBlocks.Count > 0)
+            {
+                unfilledBlocks.AddRange(emptyRemainBlocks);
+            }
+
+            yield break;
+        }
+
+        bool CanBlockBeAllocatable(int nRow, int nCol)
+        {
+            if(_cells[nRow, nCol].type.IsBlockAllocatableType())
+            {
+                return false;
+            }
+
+            return _blocks[nRow, nCol] == null;
         }
     }
 }

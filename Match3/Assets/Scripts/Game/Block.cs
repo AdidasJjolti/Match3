@@ -171,6 +171,7 @@ namespace Match3.Board
         #endregion
 
         #region MatchCheck
+
         public _eBlockStatus _status;
         public _eBlockQuestType _questType;
         public _eMatchType _match = _eMatchType.NONE;
@@ -203,6 +204,7 @@ namespace Match3.Board
             // 매치 상태인 경우, CLEAR 할 수 있는 상태
             if(_status == _eBlockStatus.MATCH)
             {
+                // 내구도 1 감소
                 if(_questType == _eBlockQuestType.CLEAR_SIMPLE || boardEnumerator.IsCageTypeCell(nRow, nCol))
                 {
                     Debug.Assert(_durability > 0, $"durability is zero : {_durability}");
@@ -213,6 +215,7 @@ namespace Match3.Board
                     return true;
                 }
 
+                // 내구도가 0이 되면 CLEAR 상태로 변경
                 if (_durability == 0)
                 {
                     _status = _eBlockStatus.CLEAR;
@@ -220,6 +223,7 @@ namespace Match3.Board
                 }
             }
 
+            // 내구도가 0보다 크면 NORMAL 상태로 변경하여 CLEAR 할 수 없음
             _status = _eBlockStatus.NORMAL;
             _match = _eMatchType.NONE;
             _matchCount = 0;
@@ -267,6 +271,23 @@ namespace Match3.Board
         {
             Debug.Assert(blockObj != null, $"{_match}");
             _blockBehaviour.DoActionClear();
+        }
+
+        [SerializeField] BlockActionBehaviour _blockActionBehaviour;
+        public bool _isMoving
+        {
+            get
+            {
+                return blockObj != null && _blockActionBehaviour._isMoving;
+            }
+        }
+
+        public Vector2 _dropDistance
+        {
+            set
+            {
+                _blockActionBehaviour?.MoveDrop(value);
+            }
         }
         #endregion
     }

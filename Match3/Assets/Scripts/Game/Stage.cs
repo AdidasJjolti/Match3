@@ -172,6 +172,48 @@ namespace Match3.Stage
         {
             yield return _board.Evaluate(matchResult);
         }
+
+        public IEnumerator PostprocessAfterEvaluate()
+        {
+            List<KeyValuePair<int, int>> unfilledBlocks = new List<KeyValuePair<int, int>>();
+            List<Block> movingBlocks = new List<Block>();
+
+            // 제거된 블럭에 따라 블럭 재배치
+            yield return _board.ArrangeBlocksAfterClean(unfilledBlocks, movingBlocks);
+            // 생성된 블럭이 잠시 보이도록 다른 블럭이 드롭하는 동안 대기
+            yield return WaitForDropping(movingBlocks);
+        }
+
+        public IEnumerator WaitForDropping(List<Block> movingBlocks)
+        {
+            WaitForSeconds waitForSecond = new WaitForSeconds(0.05f);       // 0.05초마다 체크
+
+            // 애니메이션 중인 블럭이 없을 때까지 반복
+            while(true)
+            {
+                bool continued = false;
+
+                for(int i = 0; i < movingBlocks.Count; i++)
+                {
+                    if(movingBlocks[i]._isMoving)
+                    {
+                        continued = true;
+                        break;
+                    }
+                }
+
+                // 움직이는 블럭이 없으면 while문 종료
+                if(!continued)
+                {
+                    break;
+                }
+
+                yield return waitForSecond;
+            }
+
+            movingBlocks.Clear();   // 리스트 초기화
+            yield break;
+        }
     }
 }
 

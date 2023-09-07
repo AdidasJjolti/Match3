@@ -49,7 +49,7 @@ namespace Match3.Stage
                     Returnable<bool> matchBlock = new Returnable<bool>(false);
                     yield return EvaluateBoard(matchBlock);
 
-                    // 스와이프한 블럭이 매치되지 않는 경우 원상태로 복귀
+                    // 스와이프한 블럭이 3매치 형성되지 않는 경우 원상태로 복귀
                     if(!matchBlock.value)
                     {
                         yield return _stage.CoDoSwipeAction(nRow, nCol, swipeDir, swipedBlock);
@@ -62,10 +62,16 @@ namespace Match3.Stage
             yield break;
         }
 
-        // 3매치 블럭 삭제, 빈블럭 자리에 새 블럭 드랍 실행
+        // 3매치 블럭 삭제, 빈 블럭 자리에 새 블럭 드랍 실행
         IEnumerator EvaluateBoard(Returnable<bool> matchResult)
         {
-            yield return _stage.Evaluate(matchResult);
+            yield return _stage.Evaluate(matchResult);      // 3매치 블럭 삭제
+
+            //블럭 제거 후 빈 블럭 드랍 및 새 블럭 생성
+            if(matchResult.value)
+            {
+                yield return _stage.PostprocessAfterEvaluate();
+            }
         }
     }
 }

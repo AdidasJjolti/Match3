@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2100474234378563104}
   - component: {fileID: 2100474234378563111}
   - component: {fileID: 2174069427905515297}
+  - component: {fileID: 1837550745380688850}
   m_Layer: 0
   m_Name: Block
   m_TagString: Untagged
@@ -116,3 +117,22 @@ MonoBehaviour:
   _blockType: 1
   _blockBehaviour: {fileID: 2100474234378563111}
   _breed: 0
+  _status: 0
+  _questType: 0
+  _match: 0
+  _matchCount: 0
+  _durability: 0
+  _blockActionBehaviour: {fileID: 1837550745380688850}
+--- !u!114 &1837550745380688850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2100474234378563109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81600b8e3d13a3c41b4e285281cffb41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockConfig: {fileID: 11400000, guid: 2895f21965bc9d444a69134166ed63eb, type: 2}
