@@ -62,16 +62,34 @@ namespace Match3.Stage
             yield break;
         }
 
+        bool isFirst = true;
+
         // 3매치 블럭 삭제, 빈 블럭 자리에 새 블럭 드랍 실행
         IEnumerator EvaluateBoard(Returnable<bool> matchResult)
         {
-            yield return _stage.Evaluate(matchResult);      // 3매치 블럭 삭제
-
-            //블럭 제거 후 빈 블럭 드랍 및 새 블럭 생성
-            if(matchResult.value)
+            // 매칭된 블럭이 있는 경우 반복 수행
+            while(true)
             {
-                yield return _stage.PostprocessAfterEvaluate();
+                // 매치 블럭 제거
+                Returnable<bool> blockMatched = new Returnable<bool>(false);
+                yield return StartCoroutine(_stage.Evaluate(blockMatched));
+
+                // 매치 블럭이 있는 경우 블럭 드롭 등 후처리 진행
+                if (blockMatched.value)
+                {
+                    matchResult.value = true;
+
+                    // 매치 블럭 제거 후 빈 블럭 드롭 후 새 블럭 생성
+                    yield return StartCoroutine(_stage.PostprocessAfterEvaluate());
+                }
+                // 매치 블럭이 없는 경우 while문 종료
+                else
+                {
+                    break;
+                }
             }
+
+            yield break;
         }
     }
 }

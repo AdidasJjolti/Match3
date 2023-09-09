@@ -17,4 +17,13 @@ namespace Util
             return new KeyValuePair<T1, T2>(sortedList.Keys[0], sortedList.Values[0]);
         }
     }
+
+    class ReverseComparer<T> : IComparer<T>
+    {
+        public int Compare(T x, T y)
+        {
+            // Reverse the comparison to sort in descending order
+            return Comparer<T>.Default.Compare(y, x);
+        }
+    }
 }

@@ -36,8 +36,9 @@ namespace Match3.Board
             {
                 Vector2 vtDestination = _movementQueue.Dequeue();
 
-                int dropIndex = Mathf.Min(9, Mathf.Max(1, (int)Mathf.Abs(vtDestination.y)));    // 블럭이 떨어지는 거리를 1과 9사이에서 결정
-                float duration = _blockConfig.dropSpeed[dropIndex - 1];                         // 떨어지는 거리에 따라 속도 결정
+                float duration = Core.Constants.DROP_TIME;
+                //int dropIndex = Mathf.Min(9, Mathf.Max(1, (int)Mathf.Abs(vtDestination.y)));    // 블럭이 떨어지는 거리를 1과 9사이에서 결정
+                //float duration = _blockConfig.dropSpeed[dropIndex - 1];                         // 떨어지는 거리에 따라 속도 결정
 
                 yield return CoStartDropSmooth(vtDestination, duration * acc);
             }
@@ -48,7 +49,7 @@ namespace Match3.Board
 
         IEnumerator CoStartDropSmooth(Vector2 vtDropDistance, float duration)
         {
-            Vector2 to = new Vector3(transform.position.x + vtDropDistance.x, transform.position.y - vtDropDistance.y);
+            Vector2 to = new Vector3(transform.position.x + vtDropDistance.x, transform.position.y - vtDropDistance.y, transform.position.z);
             yield return Action2D.MoveTo(transform, to, duration);
         }
     }

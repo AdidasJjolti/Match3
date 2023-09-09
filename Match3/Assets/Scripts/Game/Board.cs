@@ -283,28 +283,35 @@ namespace Match3.Board
 
         public IEnumerator ArrangeBlocksAfterClean(List<IntIntKV> unfilledBlocks, List<Block> movingBlocks)
         {
-            SortedList<int, int> emptyBlocks = new SortedList<int, int>();
-            List<IntIntKV> emptyRemainBlocks = new List<IntIntKV>();
+            SortedList<int, int> tempBlocks = new SortedList<int, int>();       // 빈 블럭으로 남는 위치를 저장할 임시 리스트
+            List<IntIntKV> emptyRemainBlocks = new List<IntIntKV>();            // 이동이 필요한 블럭 리스트를 저장할 리스트
+
+            int emptyCount = 0;
 
             for(int nCol = 0; nCol < _Col; nCol++)
             {
-                emptyBlocks.Clear();
+                tempBlocks.Clear();
 
                 for(int nRow = 0; nRow < _Row; nRow++)
                 {
                     if(CanBlockBeAllocatable(nRow, nCol))
                     {
-                        emptyBlocks.Add(nRow, nCol);
+                        tempBlocks.Add(nRow, nRow);
                     }
                 }
 
-                if(emptyBlocks.Count == 0)
+                IComparer<int> reverseComparer = new ReverseComparer<int>();
+                SortedList<int, int> emptyBlocks = new SortedList<int, int>(tempBlocks, reverseComparer);      // 빈 블럭으로 남는 위치를 저장할 리스트
+
+                if (emptyBlocks.Count == 0)
                 {
                     continue;
                 }
 
+                // 가장 아래에 비어있는 블럭 처리
                 IntIntKV first = emptyBlocks.First();
 
+                // 비어있는 블럭 위쪽 방향으로 이동 가능한 블럭을 탐색하면서 빈 블럭 자리를 채움
                 for(int nRow = first.Value + 1; nRow < _Row; nRow++)
                 {
                     Block block = _blocks[nRow, nCol];
@@ -328,11 +335,13 @@ namespace Match3.Board
                     first = emptyBlocks.First();
                     nRow = first.Value;
                 }
+
+                emptyCount = emptyBlocks.Count;
             }
 
             yield return null;
 
-            if(emptyBlocks.Count > 0)
+            if(emptyCount > 0)
             {
                 unfilledBlocks.AddRange(emptyRemainBlocks);
             }
