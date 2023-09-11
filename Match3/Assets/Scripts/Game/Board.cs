@@ -283,10 +283,9 @@ namespace Match3.Board
 
         public IEnumerator ArrangeBlocksAfterClean(List<IntIntKV> unfilledBlocks, List<Block> movingBlocks)
         {
+            Debug.Log("ArrangeBlocksAfterClean 시작");
             SortedList<int, int> tempBlocks = new SortedList<int, int>();       // 빈 블럭으로 남는 위치를 저장할 임시 리스트
             List<IntIntKV> emptyRemainBlocks = new List<IntIntKV>();            // 이동이 필요한 블럭 리스트를 저장할 리스트
-
-            int emptyCount = 0;
 
             for(int nCol = 0; nCol < _Col; nCol++)
             {
@@ -330,18 +329,16 @@ namespace Match3.Board
                     _blocks[nRow, nCol] = null;
 
                     emptyBlocks.RemoveAt(0);
-                    emptyBlocks.Add(nRow, nCol);
+                    emptyBlocks.Add(nRow, nRow);
 
                     first = emptyBlocks.First();
                     nRow = first.Value;
                 }
-
-                emptyCount = emptyBlocks.Count;
             }
 
             yield return null;
 
-            if(emptyCount > 0)
+            if(emptyRemainBlocks.Count > 0)
             {
                 unfilledBlocks.AddRange(emptyRemainBlocks);
             }
@@ -351,7 +348,7 @@ namespace Match3.Board
 
         bool CanBlockBeAllocatable(int nRow, int nCol)
         {
-            if(_cells[nRow, nCol].type.IsBlockAllocatableType())
+            if(!_cells[nRow, nCol].type.IsBlockAllocatableType())
             {
                 return false;
             }

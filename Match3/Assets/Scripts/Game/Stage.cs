@@ -175,6 +175,7 @@ namespace Match3.Stage
 
         public IEnumerator PostprocessAfterEvaluate()
         {
+            Debug.Log("PostprocessAfterEvaluate Ω√¿€");
             List<KeyValuePair<int, int>> unfilledBlocks = new List<KeyValuePair<int, int>>();
             List<Block> movingBlocks = new List<Block>();
 

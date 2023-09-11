@@ -18,7 +18,7 @@ namespace Util
         }
     }
 
-    class ReverseComparer<T> : IComparer<T>
+    public class ReverseComparer<T> : IComparer<T>
     {
         public int Compare(T x, T y)
         {
