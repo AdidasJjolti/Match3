@@ -287,15 +287,15 @@ namespace Match3.Board
             SortedList<int, int> tempBlocks = new SortedList<int, int>();       // 빈 블럭으로 남는 위치를 저장할 임시 리스트
             List<IntIntKV> emptyRemainBlocks = new List<IntIntKV>();            // 이동이 필요한 블럭 리스트를 저장할 리스트
 
-            for(int nCol = 0; nCol < _Col; nCol++)
+            for(int nRow = 0; nRow < _Row; nRow++)
             {
                 tempBlocks.Clear();
 
-                for(int nRow = 0; nRow < _Row; nRow++)
+                for(int nCol = 0; nCol < _Col; nCol++)
                 {
                     if(CanBlockBeAllocatable(nRow, nCol))
                     {
-                        tempBlocks.Add(nRow, nRow);
+                        tempBlocks.Add(nCol, nCol);
                     }
                 }
 
@@ -311,7 +311,7 @@ namespace Match3.Board
                 IntIntKV first = emptyBlocks.First();
 
                 // 비어있는 블럭 위쪽 방향으로 이동 가능한 블럭을 탐색하면서 빈 블럭 자리를 채움
-                for(int nRow = first.Value + 1; nRow < _Row; nRow++)
+                for(int nCol = first.Value + 1; nCol < _Col; nCol++)
                 {
                     Block block = _blocks[nRow, nCol];
 
@@ -320,7 +320,7 @@ namespace Match3.Board
                         continue;
                     }
 
-                    block._dropDistance = new Vector2(0, nRow - first.Value);
+                    block._dropDistance = new Vector2(0, nCol - first.Value);
                     movingBlocks.Add(block);
 
                     Debug.Assert(_cells[first.Value, nCol].IsObstracle() == false, $"{_cells[first.Value, nCol]}");
@@ -329,10 +329,10 @@ namespace Match3.Board
                     _blocks[nRow, nCol] = null;
 
                     emptyBlocks.RemoveAt(0);
-                    emptyBlocks.Add(nRow, nRow);
+                    emptyBlocks.Add(nCol, nCol);
 
                     first = emptyBlocks.First();
-                    nRow = first.Value;
+                    nCol = first.Value;
                 }
             }
 
