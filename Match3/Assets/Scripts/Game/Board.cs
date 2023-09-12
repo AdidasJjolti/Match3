@@ -311,28 +311,30 @@ namespace Match3.Board
                 IntIntKV first = emptyBlocks.First();
 
                 // 비어있는 블럭 위쪽 방향으로 이동 가능한 블럭을 탐색하면서 빈 블럭 자리를 채움
-                for(int nCol = first.Value + 1; nCol < _Col; nCol++)
+                for(int col = first.Value - 1; col >= 0; col--)
                 {
-                    Block block = _blocks[nRow, nCol];
+                    Block block = _blocks[nRow, col];
 
-                    if(block == null || _cells[nRow, nCol].type == _eTileType.EMPTY)
+                    if(block == null || _cells[nRow, col].type == _eTileType.EMPTY)
                     {
                         continue;
                     }
 
-                    block._dropDistance = new Vector2(0, nCol - first.Value);
+                    // 이동할 블럭 발견
+                    block._dropDistance = new Vector2(0, col - first.Value);
                     movingBlocks.Add(block);
 
-                    Debug.Assert(_cells[first.Value, nCol].IsObstracle() == false, $"{_cells[first.Value, nCol]}");
-                    _blocks[first.Value, nCol] = block;
-
-                    _blocks[nRow, nCol] = null;
+                    Debug.Assert(_cells[first.Value, col].IsObstracle() == false, $"{_cells[first.Value, col]}");
+                    // 이동될 위치로 board에서 저장된 위치 이동
+                    _blocks[nRow, first.Value] = block;
+                    // 다른 곳으로 이동하여 현재 위치 비워둠
+                    _blocks[nRow, col] = null;
 
                     emptyBlocks.RemoveAt(0);
-                    emptyBlocks.Add(nCol, nCol);
+                    emptyBlocks.Add(col, col);
 
                     first = emptyBlocks.First();
-                    nCol = first.Value;
+                    col = first.Value;
                 }
             }
 

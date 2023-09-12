@@ -49,7 +49,7 @@ namespace Match3.Board
 
         IEnumerator CoStartDropSmooth(Vector2 vtDropDistance, float duration)
         {
-            Vector2 to = new Vector3(transform.position.x + vtDropDistance.x, transform.position.y - vtDropDistance.y, transform.position.z);
+            Vector2 to = new Vector3(transform.position.x + vtDropDistance.x, transform.position.y + vtDropDistance.y);
             yield return Action2D.MoveTo(transform, to, duration);
         }
     }

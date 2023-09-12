@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Util;
+using UnityEngine.SceneManagement;
 
 namespace Match3.Stage
 {
@@ -41,6 +42,11 @@ namespace Match3.Stage
             if(!_Init)
             {
                 return;
+            }
+
+            if(Input.GetKeyDown(KeyCode.F12))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
 
             OnInputHandler();       // 입력 감지할 메서드
