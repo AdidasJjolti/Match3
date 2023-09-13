@@ -29,3 +29,4 @@ MonoBehaviour:
   - 0.475
   - 0.5
   - 0.525
+  explosion: {fileID: 2379459732380380787, guid: f0b41dc52e5710b4ea8dc869aac82377, type: 3}

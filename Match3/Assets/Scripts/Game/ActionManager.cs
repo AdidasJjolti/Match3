@@ -41,6 +41,8 @@ namespace Match3.Stage
             {
                 _isRunning = true;
 
+                SoundManager._instance.PlayOneShot(_eClip.CHOMP);
+
                 Returnable<bool> swipedBlock = new Returnable<bool>(false);             // 코루틴 실행 결과를 전달받을 Returnable 객체 생성
                 yield return _stage.CoDoSwipeAction(nRow, nCol, swipeDir, swipedBlock);
 
@@ -78,6 +80,8 @@ namespace Match3.Stage
                 if (blockMatched.value)
                 {
                     matchResult.value = true;
+
+                    SoundManager._instance.PlayOneShot(_eClip.BLOCKCLEAR);
 
                     // 매치 블럭 제거 후 빈 블럭 드롭 후 새 블럭 생성
                     yield return StartCoroutine(_stage.PostprocessAfterEvaluate());

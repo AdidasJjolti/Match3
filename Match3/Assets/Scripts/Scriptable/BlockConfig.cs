@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Match3.Board;
 
 namespace Scriptable
 {
@@ -9,6 +10,18 @@ namespace Scriptable
     {
         public Sprite[] basicBlockSprites;
         public float[] dropSpeed;           // 떨어지는 거리에 따라 다른 속도 적용
+        public GameObject explosion;
+
+        public GameObject GetExplosionObject(_eBlockQuestType questType)
+        {
+            switch(questType)
+            {
+                case _eBlockQuestType.CLEAR_SIMPLE:
+                    return Instantiate(explosion) as GameObject;
+                default:
+                    return Instantiate(explosion) as GameObject;
+            }
+        }
     }
 }
 
