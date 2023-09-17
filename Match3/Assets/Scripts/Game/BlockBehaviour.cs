@@ -48,9 +48,15 @@ namespace Match3.Board
 
         IEnumerator CoStartSimpleExplosion(bool destroy = true)     // 디폴트 매개 변수로 true 설정, 호출할 때 파라미터를 넣지 않는 경우 true로 설정, 디폴트 매개 변수는 매개 변수 중 뒤쪽에만 배치 가능
         {
+            yield return Util.Action2D.Scale(transform, Core.Constants.BLOCK_DESTROY_SCALE, 4f);
+
             GameObject explosionObj = _blockConfig.GetExplosionObject(_eBlockQuestType.CLEAR_SIMPLE);
+            ParticleSystem.MainModule newModule = explosionObj.GetComponent<ParticleSystem>().main;
+            newModule.startColor = _blockConfig.GetBlockColor(_block._breed);
+
             explosionObj.SetActive(true);
             explosionObj.transform.position = this.transform.position;
+            Debug.Log($"Explosion positions : {explosionObj.transform.position.x}, {explosionObj.transform.position.y}");
 
             yield return new WaitForSeconds(0.1f);
 

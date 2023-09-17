@@ -155,6 +155,9 @@ namespace Match3.Board
 
             // 리스트에 있는 블럭 모두 제거
             clearBlocks.ForEach((block) => block.Destroy());
+
+            yield return new WaitForSeconds(0.15f);         // 블럭이 제거되는 동안 딜레이 적용
+
             matchResult.value = true;
 
             yield break;

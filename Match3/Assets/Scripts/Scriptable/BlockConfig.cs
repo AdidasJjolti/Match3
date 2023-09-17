@@ -11,6 +11,7 @@ namespace Scriptable
         public Sprite[] basicBlockSprites;
         public float[] dropSpeed;           // 떨어지는 거리에 따라 다른 속도 적용
         public GameObject explosion;
+        public Color[] blockColors;
 
         public GameObject GetExplosionObject(_eBlockQuestType questType)
         {
@@ -21,6 +22,11 @@ namespace Scriptable
                 default:
                     return Instantiate(explosion) as GameObject;
             }
+        }
+
+        public Color GetBlockColor(_eBlockBreed breed)
+        {
+            return blockColors[(int)breed];
         }
     }
 }
