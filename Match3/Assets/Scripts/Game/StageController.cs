@@ -74,7 +74,7 @@ namespace Match3.Stage
 
             if (_stage != null)
             {
-                _stage.board.ComposeStage();
+                _stage.board.ComposeStage(_tilemap2D);
             }
         }
 

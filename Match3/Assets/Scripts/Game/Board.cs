@@ -12,6 +12,7 @@ namespace Match3.Board
         int _row;
         int _col;
         Transform _container;
+        G_TileMap2D _tileMap2D;
 
         BoardEnumerator _enumerator;
 
@@ -66,8 +67,9 @@ namespace Match3.Board
             _enumerator = new BoardEnumerator(this);
         }
 
-        internal void ComposeStage(Transform container = null)
+        internal void ComposeStage(G_TileMap2D tilemap2D, Transform container = null)
         {
+            _tileMap2D = tilemap2D;
             _container = container;
             
             BoardShuffler shuffler = new BoardShuffler(this, true);
@@ -359,6 +361,60 @@ namespace Match3.Board
             }
 
             return _blocks[nRow, nCol] == null;
+        }
+
+        public IEnumerator SpawnBlocksAfterClean(List<Block> movingBlocks)
+        {
+            for(int col = 0; col < _Col; col++)
+            {
+                for(int row = 0; row < _Row; row++)
+                {
+                    if(_blocks[row, col] == null)   // 해당 위치에 블럭이 삭제된 경우 아래 코드 실행
+                    {
+                        int topRow = row;
+                        // 블럭이 생성되는 원점 설정, 0은 보드 상단 기준으로 첫번째 블럭치 생성되는 위치
+                        // 새 블럭이 생성되면 1씩 증가해서 다음 블럭이 이전 블럭의 위쪽에서 드롭이 시작하도록 함
+                        int spawnBaseY = 0;
+
+                        for(int y = topRow; y < _Row; y++)
+                        {
+                            if(_blocks[y, col] != null || !CanBlockBeAllocatable(y, col))
+                            {
+                                continue;
+                            }
+
+                            Block block = SpawnBlockWithDrop(y, col, spawnBaseY, col);
+                            if(block != null)
+                            {
+                                movingBlocks.Add(block);
+                            }
+
+                            spawnBaseY++;
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            yield return null;
+        }
+
+        Block SpawnBlockWithDrop(int row, int col, int spawnedRow, int spawnedCol)
+        {
+            float initX = CalcInitX(Core.Constants.BLOCK_ORG);
+            float initY = CalcInitY(Core.Constants.BLOCK_ORG);
+
+            //Block block = _stageBuilder.SpawnBlock().InstantiateBlockObj(_blockPrefab, _container);
+            Block block = _tileMap2D.RespawnBlock(row, col);
+            if (block != null)
+            {
+                _blocks[row, col] = block;
+                block.Move(initX + (float)spawnedCol, initY + (float)spawnedRow);
+                block._dropDistance = new Vector2(spawnedCol - col, row + (spawnedRow - row));
+            }
+
+            return block;
         }
     }
 }

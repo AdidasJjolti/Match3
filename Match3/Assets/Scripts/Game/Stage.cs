@@ -181,6 +181,8 @@ namespace Match3.Stage
 
             // 제거된 블럭에 따라 블럭 재배치
             yield return _board.ArrangeBlocksAfterClean(unfilledBlocks, movingBlocks);
+            // 재배치 완료 후 비어있는 블럭 자리에 다시 생성
+            yield return _board.SpawnBlocksAfterClean(movingBlocks);
             // 생성된 블럭이 잠시 보이도록 다른 블럭이 드롭하는 동안 대기
             yield return WaitForDropping(movingBlocks);
         }

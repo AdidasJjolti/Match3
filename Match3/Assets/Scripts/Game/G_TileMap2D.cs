@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Match3.Board;
+using UnityEngine;
 
 public class G_TileMap2D : MonoBehaviour
 {
@@ -101,6 +99,22 @@ public class G_TileMap2D : MonoBehaviour
         _IDXblock++;
 
         clone.GetComponent<BlockBehaviour>().UpdateView(false);
+    }
+
+    public Block RespawnBlock(int row, int col)
+    {
+        GameObject clone = Instantiate(_blockPrefab);
+        clone.name = "Block" + _IDXblock.ToString();
+        clone.transform.SetParent(transform);
+        var block = clone.GetComponent<Block>();
+        block.Init(_eBlockType.BASIC);
+
+        _tileMapBlocks[row, col] = clone;
+        _IDXblock++;
+
+        clone.GetComponent<BlockBehaviour>().UpdateView(false);
+
+        return clone.GetComponent<Block>();
     }
 
     public int GetWidth()
