@@ -83,7 +83,7 @@ namespace Match3.Board
 
         public float CalcInitY(float offset = 0)
         {
-            return -_Row / 2.0f + offset;
+            return _Row / 2.0f - offset;
         }
 
         // 해당 위치 블럭이 셔플 대상인지 검사
@@ -320,7 +320,7 @@ namespace Match3.Board
                 {
                     Block block = _blocks[nRow, col];
 
-                    if(block == null || _cells[nRow, col].type == _eTileType.EMPTY)
+                    if(block == null || _cells[nRow, col].type != _eTileType.NORMAL)
                     {
                         continue;
                     }
@@ -365,31 +365,32 @@ namespace Match3.Board
 
         public IEnumerator SpawnBlocksAfterClean(List<Block> movingBlocks)
         {
-            for(int col = 0; col < _Col; col++)
+            Debug.Log("SpawnBlocksAfterClean 시작");
+            for (int row = 0; row < _Row; row++)
             {
-                for(int row = 0; row < _Row; row++)
+                for(int col = _Col - 1; col >= 0; col--)
                 {
                     if(_blocks[row, col] == null)   // 해당 위치에 블럭이 삭제된 경우 아래 코드 실행
                     {
-                        int topRow = row;
-                        // 블럭이 생성되는 원점 설정, 0은 보드 상단 기준으로 첫번째 블럭치 생성되는 위치
+                        //int topCol = _Col;
+                        // 블럭이 생성되는 원점 설정, 0은 보드 상단 기준으로 첫번째 블럭이 생성되는 위치
                         // 새 블럭이 생성되면 1씩 증가해서 다음 블럭이 이전 블럭의 위쪽에서 드롭이 시작하도록 함
                         int spawnBaseY = 0;
 
-                        for(int y = topRow; y < _Row; y++)
+                        for(int y = col; y >= 0; y--)   // y는 블럭이 도착할 좌표
                         {
-                            if(_blocks[y, col] != null || !CanBlockBeAllocatable(y, col))
+                            if(_blocks[row, y] != null || !CanBlockBeAllocatable(row, y))
                             {
                                 continue;
                             }
 
-                            Block block = SpawnBlockWithDrop(y, col, spawnBaseY, col);
+                            Block block = SpawnBlockWithDrop(row, y, row, spawnBaseY);
                             if(block != null)
                             {
                                 movingBlocks.Add(block);
                             }
 
-                            spawnBaseY++;
+                            //spawnBaseY--;
                         }
 
                         break;
@@ -400,6 +401,8 @@ namespace Match3.Board
             yield return null;
         }
 
+        // row, col : 블럭 생성 후 저장되는(도착하는) 위치
+        // spawnedRow, spawnedCol : 블럭이 생성되는 위치, row, col까지 드롭
         Block SpawnBlockWithDrop(int row, int col, int spawnedRow, int spawnedCol)
         {
             float initX = CalcInitX(Core.Constants.BLOCK_ORG);
@@ -410,8 +413,8 @@ namespace Match3.Board
             if (block != null)
             {
                 _blocks[row, col] = block;
-                block.Move(initX + (float)spawnedCol, initY + (float)spawnedRow);
-                block._dropDistance = new Vector2(spawnedCol - col, row + (spawnedRow - row));
+                block.Move(initX + (float)spawnedRow, initY + (float)spawnedCol);
+                block._dropDistance = new Vector2(0, spawnedCol - col);
             }
 
             return block;
