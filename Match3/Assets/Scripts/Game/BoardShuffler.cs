@@ -27,6 +27,22 @@ namespace Match3.Board
             PrepareShuffleBlocks();                 // 셔플 대상 블럭을 리스트에 보관
             RunShuffle(animation);                  // 위에서 준비한 데이터로 셔플 실행
 
+
+            Debug.Log("셔플 블록 정보 출력 : ");
+            System.Text.StringBuilder shuffledBlocks = new System.Text.StringBuilder();
+
+            for (int row = 0; row < 10; row++)
+            {
+                for (int col = 0; col < 10; col++)
+                {
+                    shuffledBlocks.Append($"{_board.blocks[col, row].GetComponent<Block>()._breed}, ");
+                }
+
+                shuffledBlocks.Append("\n");
+            }
+
+            Debug.Log(shuffledBlocks.ToString());
+
             Debug.Log("셔플 완료");
         }
 

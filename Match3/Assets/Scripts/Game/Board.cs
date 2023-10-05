@@ -116,6 +116,7 @@ namespace Match3.Board
 
             // 새로운 breed를 설정
             block.breed = genBreed;
+            block.blockBehaviour.ChangeView(genBreed);
         }
 
         public bool IsSwipeable(int nRow, int nCol)

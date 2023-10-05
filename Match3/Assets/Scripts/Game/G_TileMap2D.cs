@@ -71,6 +71,20 @@ public class G_TileMap2D : MonoBehaviour
             }
         }
 
+        Debug.Log("생성 맵 블록 정보 출력 : ");
+        System.Text.StringBuilder blocks = new System.Text.StringBuilder();
+
+        for (int row = 0; row < _width; row++)
+        {
+            for(int col = 0; col < _height; col++)
+            {
+                blocks.Append($"{_tileMapBlocks[col, row].GetComponent<Block>()._breed}, ");
+            }
+
+            blocks.Append("\n");
+        }
+
+        Debug.Log(blocks.ToString());
         Debug.Log("맵 생성 완료");
     }
 

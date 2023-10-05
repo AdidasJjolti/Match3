@@ -41,6 +41,22 @@ namespace Match3.Board
             Debug.Log("블럭 종류 설정 완료");
         }
 
+        // 타입이 EMPTY인 경우 스프라이트를 null로 세팅
+        public void ChangeView(_eBlockBreed changeBreed)
+        {
+            if (_block.type == _eBlockType.EMPTY)
+            {
+                _renderer.sprite = null;
+            }
+            else
+            {
+                _block.breed = changeBreed;
+                _renderer.sprite = _blockConfig.basicBlockSprites[(int)_block.breed];
+            }
+
+            Debug.Log("블럭 종류 설정 완료");
+        }
+
         public void DoActionClear()
         {
             StartCoroutine(CoStartSimpleExplosion(true));

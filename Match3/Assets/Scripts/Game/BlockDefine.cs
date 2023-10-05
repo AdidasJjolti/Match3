@@ -8,8 +8,13 @@ namespace Match3.Board
     {
         EMPTY = 0,
         BASIC,
+        MAX,
 
-        MAX
+        ITEM = 10,
+        HORIZONTAL,
+        VERTICAL,
+        BOMB,
+        ITEM_MAX
     }
 
     public enum _eBlockBreed
