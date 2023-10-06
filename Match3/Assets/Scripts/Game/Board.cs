@@ -114,7 +114,7 @@ namespace Match3.Board
                 break;
             }
 
-            // 새로운 breed를 설정
+            // 새로운 breed를 설정하고 스프라이트를 결정된 breed에 맞게 변경
             block.breed = genBreed;
             block.blockBehaviour.ChangeView(genBreed);
         }
