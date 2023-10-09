@@ -38,7 +38,7 @@ namespace Match3.Board
                 _renderer.sprite = _blockConfig.basicBlockSprites[(int)_block.breed];
             }
 
-            Debug.Log("블럭 종류 설정 완료");
+            //Debug.Log("블럭 종류 설정 완료");
         }
 
         // 타입이 EMPTY인 경우 스프라이트를 null로 세팅
@@ -54,7 +54,7 @@ namespace Match3.Board
                 _renderer.sprite = _blockConfig.basicBlockSprites[(int)_block.breed];
             }
 
-            Debug.Log("블럭 종류 설정 완료");
+            //Debug.Log("블럭 종류 설정 완료");
         }
 
         public void DoActionClear()
@@ -72,7 +72,7 @@ namespace Match3.Board
 
             explosionObj.SetActive(true);
             explosionObj.transform.position = this.transform.position;
-            Debug.Log($"Explosion positions : {explosionObj.transform.position.x}, {explosionObj.transform.position.y}");
+            //Debug.Log($"Explosion positions : {explosionObj.transform.position.x}, {explosionObj.transform.position.y}");
 
             yield return new WaitForSeconds(0.1f);
 

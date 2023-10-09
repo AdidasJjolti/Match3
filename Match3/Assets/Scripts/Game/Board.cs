@@ -206,8 +206,8 @@ namespace Match3.Board
 
             Block block;
 
-            // baseBlock 기준 우측 블럭 검사
-            for (int i = nCol + 1; i < nCol; i++)
+            // baseBlock 기준 아래쪽 블럭 검사
+            for (int i = nCol + 1; i < _Col; i++)
             {
                 block = _blocks[nRow, i];
                 if(!block.IsSafeEqual(baseBlock))
@@ -215,10 +215,11 @@ namespace Match3.Board
                     break;
                 }
 
+                //Debug.Log($"{baseBlock.transform.localPosition.x}, {baseBlock.transform.localPosition.y}에 위치한 블록 기준 아래쪽 블록과 일치");
                 matchedBlockList.Add(block);
             }
 
-            // baseBlock 기준 좌측 블럭 검사
+            // baseBlock 기준 위쪽 블럭 검사
             for (int i = nCol - 1; i >= 0; i--)
             {
                 block = _blocks[nRow, i];
@@ -227,12 +228,18 @@ namespace Match3.Board
                     break;
                 }
 
+                //Debug.Log($"{baseBlock.transform.localPosition.x}, {baseBlock.transform.localPosition.y}에 위치한 블록 기준 위쪽 블록과 일치");
                 matchedBlockList.Insert(0, block);
             }
 
             if(matchedBlockList.Count >= 3)
             {
-                SetBlockStatusMatched(matchedBlockList, true);
+                foreach (var item in matchedBlockList)
+                {
+                    Debug.Log($"{item.blockObj.localPosition.x}, {item.blockObj.localPosition.y}에 위치한 블록이 리스트에 추가됨");
+                }
+
+                SetBlockStatusMatched(matchedBlockList, false);  // 세로 매치 발생
                 found = true;
             }
 
@@ -240,8 +247,8 @@ namespace Match3.Board
 
             matchedBlockList.Add(baseBlock);
 
-            // baseBlock 기준 위쪽 블럭 검사
-            for (int i = nRow + 1; i < nRow; i++)
+            // baseBlock 기준 오른쪽 블럭 검사
+            for (int i = nRow + 1; i < _Row; i++)
             {
                 block = _blocks[i, nCol];
                 if (!block.IsSafeEqual(baseBlock))
@@ -249,10 +256,11 @@ namespace Match3.Board
                     break;
                 }
 
+                //Debug.Log($"{baseBlock.transform.localPosition.x}, {baseBlock.transform.localPosition.y}에 위치한 블록 기준 오른쪽 블록과 일치");
                 matchedBlockList.Add(block);
             }
 
-            // baseBlock 기준 아래쪽 블럭 검사
+            // baseBlock 기준 왼쪽 블럭 검사
             for (int i = nRow - 1; i >= 0; i--)
             {
                 block = _blocks[i, nCol];
@@ -261,12 +269,18 @@ namespace Match3.Board
                     break;
                 }
 
+                //Debug.Log($"{baseBlock.transform.localPosition.x}, {baseBlock.transform.localPosition.y}에 위치한 블록 기준 왼쪽 블록과 일치");
                 matchedBlockList.Insert(0, block);
             }
 
             if (matchedBlockList.Count >= 3)
             {
-                SetBlockStatusMatched(matchedBlockList, false);
+                foreach (var item in matchedBlockList)
+                {
+                    Debug.Log($"{item.blockObj.localPosition.x}, {item.blockObj.localPosition.y}에 위치한 블록이 리스트에 추가됨");
+                }
+
+                SetBlockStatusMatched(matchedBlockList, true);  // 가로 매치 발생
                 found = true;
             }
 
@@ -280,6 +294,37 @@ namespace Match3.Board
             int matchCount = blockList.Count;
             blockList.ForEach(block => block.UpdateBlockStatusMatched((_eMatchType)matchCount));
             
+            foreach(var block in blockList)
+            {
+                switch (block._match)
+                {
+                    case _eMatchType.THREE:
+                        Debug.Log($"{block.blockObj.localPosition.x}, {block.blockObj.localPosition.y}에 위치한 블록의 스테이터스 : 3개 블록 매칭됨");
+                        break;
+                    case _eMatchType.FOUR:
+                        Debug.Log($"{block.blockObj.localPosition.x}, {block.blockObj.localPosition.y}에 위치한 블록의 스테이터스 : 4개 블록 매칭됨");
+                        break;
+                    case _eMatchType.FIVE:
+                        Debug.Log($"{block.blockObj.localPosition.x}, {block.blockObj.localPosition.y}에 위치한 블록의 스테이터스 : 5개 블록 매칭됨");
+                        break;
+                    case _eMatchType.THREE_THREE:
+                        Debug.Log($"{block.blockObj.localPosition.x}, {block.blockObj.localPosition.y}에 위치한 블록의 스테이터스 : 3+3개 블록 매칭됨");
+                        break;
+                    case _eMatchType.THREE_FOUR:
+                        Debug.Log($"{block.blockObj.localPosition.x}, {block.blockObj.localPosition.y}에 위치한 블록의 스테이터스 : 3+4개 블록 매칭됨");
+                        break;
+                    case _eMatchType.THREE_FIVE:
+                        Debug.Log($"{block.blockObj.localPosition.x}, {block.blockObj.localPosition.y}에 위치한 블록의 스테이터스 : 3+5개 블록 매칭됨");
+                        break;
+                    case _eMatchType.FOUR_FIVE:
+                        Debug.Log($"{block.blockObj.localPosition.x}, {block.blockObj.localPosition.y}에 위치한 블록의 스테이터스 : 4+5개 블록 매칭됨");
+                        break;
+                    case _eMatchType.FOUR_FOUR:
+                        Debug.Log($"{block.blockObj.localPosition.x}, {block.blockObj.localPosition.y}에 위치한 블록의 스테이터스 : 4+4개 블록 매칭됨");
+                        break;
+                }
+            }
+
             // 위의 람다식과 동일한 코드
             //foreach(var block in blockList)
             //{
