@@ -112,7 +112,7 @@ public class G_TileMap2D : MonoBehaviour
         _tileMapBlocks[x, y] = clone;
         _IDXblock++;
 
-        clone.GetComponent<BlockBehaviour>().UpdateView(false);
+        clone.GetComponent<BlockBehaviour>().UpdateView();
     }
 
     public Block RespawnBlock(int row, int col)
@@ -126,7 +126,7 @@ public class G_TileMap2D : MonoBehaviour
         _tileMapBlocks[row, col] = clone;
         _IDXblock++;
 
-        clone.GetComponent<BlockBehaviour>().UpdateView(false);
+        clone.GetComponent<BlockBehaviour>().UpdateView();
 
         return clone.GetComponent<Block>();
     }

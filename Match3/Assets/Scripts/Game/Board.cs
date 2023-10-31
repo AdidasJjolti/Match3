@@ -156,6 +156,37 @@ namespace Match3.Board
                 }
             }
 
+            // 1. clearBlocks 리스트의 크기 판단
+            // 2. 3이면 기존 로직 그대로 실행, 4이면 레이저 아이템 생성, 5 이상이면 폭탄 생성
+            // 3. clearBlocks 리스트의 크기가 4 또는 5인 경우 리스트 내 블럭을 모두 제거하기 전에 하나를 무작위로 뽑아 clearBlocks에서 제거
+            // 4. 리스트에서 제거한 블록을 아이템 블록으로 모습 변경, 속성 변경
+            // 5. 이후에는 clearBlocks 리스트 내 남은 블럭을 모두 제거하는 코드 실행
+
+            // 문제 1 : 리스트에서 빠진 블록의 스프라이트가 변경되지 않음
+            // 해결 방안 : 스프라이트 변경 로직을 보강하여 아이템으로 바꾸도록 함
+            // 해결 완료
+
+            // 문제 2 : 리스트에서 빠진 블록이 제자리에서 머물러있기만하고 빈 자리로 드랍하지 않음
+            // 해결 방안 : ArrangeBlocksAfterClean에서 해당 블록을 인지하고 있는지 확인 필요
+
+            int listSize = clearBlocks.Count;
+
+            if (listSize > 3)
+            {
+                // 리스트에서 임의의 블록을 선정하여 블록 매치 갯수에 맞는 아이템으로 변경
+                int num = Random.Range(0, listSize);
+                clearBlocks[num].type = _eBlockType.ITEM;
+                clearBlocks[num].blockBehaviour.UpdateView(listSize);
+                clearBlocks[num].durability = 1;
+                clearBlocks[num]._match = _eMatchType.NONE;
+                clearBlocks[num]._questType = _eBlockQuestType.CLEAR_SIMPLE;
+
+                // 생성된 아이템 블록을 아래에 빈 공간이 있는 경우 해당 위치로 드랍
+                // ToDo : 아이템 블록이 있는 곳을 빈 공간으로 인식하지 않도록 수정 필요
+
+                clearBlocks.RemoveAt(num);
+            }
+
             // 리스트에 있는 블럭 모두 제거
             clearBlocks.ForEach((block) => block.Destroy());
 

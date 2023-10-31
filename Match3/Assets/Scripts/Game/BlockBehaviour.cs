@@ -26,16 +26,38 @@ namespace Match3.Board
         //}
 
         // 타입이 EMPTY인 경우 스프라이트를 null로 세팅
-        public void UpdateView(bool valueChange)
+        // 타입이 ITEM인 경우 listSize가 4이면 무작위로 가로 레이저 또는 세로 레이저로 변경, listSize가 5 이상이면 폭탄으로 변경
+        public void UpdateView(int listSize = 0)
         {
             if(_block.type == _eBlockType.EMPTY)
             {
                 _renderer.sprite = null;
             }
-            else
+            else if(_block.type == _eBlockType.BASIC)
             {
                 _block.breed = (_eBlockBreed)Random.Range(0, (int)_eBlockBreed.MAX);
                 _renderer.sprite = _blockConfig.basicBlockSprites[(int)_block.breed];
+            }
+            else if(_block.type == _eBlockType.ITEM)
+            {
+                if(listSize < 5)
+                {
+                    if(Random.Range(0.0f, 1.0f) < 0.5f)
+                    {
+                        _block.breed = _eBlockBreed.HORIZONTAL;
+                        _renderer.sprite = _blockConfig.itemBlockSprites[(int)_block.breed - 11];
+                    }
+                    else
+                    {
+                        _block.breed = _eBlockBreed.VERTICAL;
+                        _renderer.sprite = _blockConfig.itemBlockSprites[(int)_block.breed - 11];
+                    }
+                }
+                else
+                {
+                    _block.breed = _eBlockBreed.BOMB;
+                    _renderer.sprite = _blockConfig.itemBlockSprites[(int)_block.breed - 11];
+                }
             }
 
             //Debug.Log("블럭 종류 설정 완료");
