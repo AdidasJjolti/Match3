@@ -146,7 +146,7 @@ namespace Match3.Board
 
                     if(block != null)
                     {
-                        // 클러어 가능한 블럭이면 제거될 블럭 리스트에 넣고 blocks 배열에서 제거
+                        // 클리어 가능한 블럭이면 제거될 블럭 리스트에 넣고 blocks 배열에서 제거
                         if(block._status == _eBlockStatus.CLEAR)
                         {
                             clearBlocks.Add(block);
@@ -168,10 +168,24 @@ namespace Match3.Board
 
             // 문제 2 : 리스트에서 빠진 블록이 제자리에서 머물러있기만하고 빈 자리로 드랍하지 않음
             // 해결 방안 : ArrangeBlocksAfterClean에서 해당 블록을 인지하고 있는지 확인 필요
+            // 해결 완료 : clearBlocks로 add될 때 이미 block이 null 처리된 것을 아이템 블록으로 변경된 경우 _blocks 배열에 다시 채워넣음
+
+            // 문제 3 : 서로 다른 두 종류의 블록이 각각 3개, 4개 제거되는 경우 아이템 블록을 4개 제거되는 블록 중에서 선택해야 함
+            // 해결 방안 : 서로 다른 두 종류의 블록이 제거되는 경우 _eMatchType이 THREE가 아닌 블록이 있는지 체크하여 해당 블록들 중에서만 무작위로 1개를 골라 아이템 생성 로직 실행
 
             int listSize = clearBlocks.Count;
 
-            if (listSize > 3)
+            bool isSameBlock = true;
+            for(int i = 1; i < listSize; i++)
+            {
+                if(clearBlocks[0].breed != clearBlocks[i].breed)
+                {
+                    isSameBlock = false;
+                    break;
+                }
+            }
+
+            if (listSize > 3 && isSameBlock)
             {
                 // 리스트에서 임의의 블록을 선정하여 블록 매치 갯수에 맞는 아이템으로 변경
                 int num = Random.Range(0, listSize);
@@ -180,9 +194,14 @@ namespace Match3.Board
                 clearBlocks[num].durability = 1;
                 clearBlocks[num]._match = _eMatchType.NONE;
                 clearBlocks[num]._questType = _eBlockQuestType.CLEAR_SIMPLE;
+                clearBlocks[num]._status = _eBlockStatus.NORMAL;
 
                 // 생성된 아이템 블록을 아래에 빈 공간이 있는 경우 해당 위치로 드랍
                 // ToDo : 아이템 블록이 있는 곳을 빈 공간으로 인식하지 않도록 수정 필요
+
+                float row = clearBlocks[num].blockObj.localPosition.x + 4.5f;
+                float col = 4.5f - clearBlocks[num].blockObj.localPosition.y;
+                _blocks[(int)row, (int)col] = clearBlocks[num].GetComponent<Block>();
 
                 clearBlocks.RemoveAt(num);
             }
