@@ -19,7 +19,8 @@ namespace Effect
                 yield return new WaitForSeconds(0.5f);
                 if(!GetComponent<ParticleSystem>().IsAlive(true))
                 {
-                    Destroy(this.gameObject);
+                    //Destroy(this.gameObject);
+                    PoolManager.Instance.PoolIn(this.gameObject);
                     break;
                 }
             }
