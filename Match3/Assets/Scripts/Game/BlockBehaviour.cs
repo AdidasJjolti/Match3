@@ -26,8 +26,8 @@ namespace Match3.Board
         //}
 
         // 타입이 EMPTY인 경우 스프라이트를 null로 세팅
-        // 타입이 ITEM인 경우 listSize가 4이면 무작위로 가로 레이저 또는 세로 레이저로 변경, listSize가 5 이상이면 폭탄으로 변경
-        public void UpdateView(int listSize = 0)
+        // 타입이 ITEM인 경우 listSize가 4이면 세로 매칭인 경우 가로 레이저, 가로 매칭인 경우 세로 레이저로 변경, listSize가 5 이상이면 폭탄으로 변경
+        public void UpdateView(List<Block> blockList = null)
         {
             if(_block.type == _eBlockType.EMPTY)
             {
@@ -40,9 +40,9 @@ namespace Match3.Board
             }
             else if(_block.type == _eBlockType.ITEM)
             {
-                if(listSize < 5)
+                if(blockList.Count < 5)
                 {
-                    if(Random.Range(0.0f, 1.0f) < 0.5f)
+                    if(blockList[0].blockObj.position.x == blockList[1].blockObj.position.x)        // 세로 매칭
                     {
                         _block.breed = _eBlockBreed.HORIZONTAL;
                         _renderer.sprite = _blockConfig.itemBlockSprites[(int)_block.breed - 11];

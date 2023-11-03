@@ -193,7 +193,7 @@ namespace Match3.Board
                 // 리스트에서 임의의 블록을 선정하여 블록 매치 갯수에 맞는 아이템으로 변경
                 int num = Random.Range(0, listSize);
                 clearBlocks[num].type = _eBlockType.ITEM;
-                clearBlocks[num].blockBehaviour.UpdateView(listSize);
+                clearBlocks[num].blockBehaviour.UpdateView(clearBlocks);
                 clearBlocks[num].durability = 1;
                 clearBlocks[num]._match = _eMatchType.NONE;
                 clearBlocks[num]._questType = _eBlockQuestType.CLEAR_SIMPLE;
@@ -212,6 +212,7 @@ namespace Match3.Board
             // _eMatchType이 THREE가 아닌 블록이 있다면 해당 블록들 중에서 아이템 블록을 생성
 
             List<int> reserveBlocks = new List<int>();  // _eMatchType이 THREE가 아닌 블록의 위치를 저장할 리스트
+            List<Block> resBlocks = new List<Block>();  // _eMatchType이 THREE가 아닌 블록을 저장할 리스트
             int idx = 0;                                // 아이템 블록을 생성할 clearBlocks의 인덱스 저장
 
             if (!isSameBlock)
@@ -221,6 +222,7 @@ namespace Match3.Board
                     if(clearBlocks[i]._match == _eMatchType.FOUR || clearBlocks[i]._match == _eMatchType.FIVE)
                     {
                         reserveBlocks.Add(i);
+                        resBlocks.Add(clearBlocks[i]);
                     }
                 }
 
@@ -229,7 +231,7 @@ namespace Match3.Board
                     idx = reserveBlocks[Random.Range(0, reserveBlocks.Count)];  // _eMatchType이 THREE가 아닌 블록 중 1개를 뽑은 clearBlocks 리스트 내 인덱스
 
                     clearBlocks[idx].type = _eBlockType.ITEM;
-                    clearBlocks[idx].blockBehaviour.UpdateView(reserveBlocks.Count);
+                    clearBlocks[idx].blockBehaviour.UpdateView(resBlocks);
                     clearBlocks[idx].durability = 1;
                     clearBlocks[idx]._match = _eMatchType.NONE;
                     clearBlocks[idx]._questType = _eBlockQuestType.CLEAR_SIMPLE;
