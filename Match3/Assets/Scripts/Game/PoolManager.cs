@@ -46,24 +46,34 @@ public class PoolManager : MonoBehaviour
     public GameObject PoolOut()
     {
         GameObject obj = null;
-        if(transform.childCount <= 0)
+
+        //obj = transform.GetChild(0).gameObject;
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            if (transform.GetChild(i).gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            obj = transform.GetChild(i).gameObject;
+            break;
+        }
+
+        if(obj == null)
         {
             obj = CreateExplosion();
         }
-        else
-        {
-            obj = transform.GetChild(0).gameObject;
-            obj.SetActive(true);
-        }
 
-        obj.transform.SetParent(null);
+        obj.SetActive(true);
+
+        //obj.transform.SetParent(null);
 
         return obj;
     }
 
     public void PoolIn(GameObject explosion)
     {
-        explosion.transform.parent = transform;
+        //explosion.transform.parent = transform;
         explosion.SetActive(false);
     }
 }
