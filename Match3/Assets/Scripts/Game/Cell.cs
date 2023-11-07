@@ -25,6 +25,10 @@ namespace Match3.Board
             _tileType = tileType;
         }
 
+        /// <summary>
+        /// 셀 타입이 EMPTY인지 체크
+        /// </summary>
+        /// <returns></returns>
         public bool IsObstracle()
         {
             return _tileType == _eTileType.EMPTY;

@@ -58,7 +58,12 @@ namespace Match3.Board
 
     static class BlockMethod
     {
-        // block이 null이 아니고 타겟 블럭과 같은 breed인 경우 true 리턴
+        /// <summary>
+        /// block이 null이 아니고 타겟 블럭과 같은 breed인 경우 true 리턴
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="targetBlock"></param>
+        /// <returns></returns>
         public static bool IsSafeEqual(this Block block, Block targetBlock)
         {
             if (block == null)

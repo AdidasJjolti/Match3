@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Util;
 using UnityEngine.SceneManagement;
+using Match3.Board;
 
 namespace Match3.Stage
 {
@@ -23,8 +24,35 @@ namespace Match3.Stage
 
         ActionManager _actionManager;
 
+        Match3.Board.Board _board;
+
+        //public static StageController _instance;
+        //public static StageController Instance
+        //{
+        //    get
+        //    {
+        //        if(_instance == null)
+        //        {
+        //            _instance = new StageController();
+        //        }
+
+        //        return _instance;
+        //    }
+        //}
+
         void Awake()
         {
+            //if (_instance == null)
+            //{
+            //    _instance = this;
+            //}
+            //else if (_instance != this)
+            //{
+            //    Destroy(gameObject);
+            //}
+
+            //DontDestroyOnLoad(gameObject);
+
             MapDataLoader _mapDataLoader = new MapDataLoader();
             MapData mapData = _mapDataLoader.Load($"stage{_stageNumber+1}");              // stage1 데이터 파일을 불러오기
             _tilemap2D.GenerateTileMap(mapData);                                          // mapData를 바탕으로 타일 생성
@@ -65,6 +93,8 @@ namespace Match3.Stage
 
             BuildStage();   // 스테이지 구성을 위해 호출
             _stage.PrintAll();
+
+            _board = _stage.board;
         }
 
         void BuildStage()
@@ -101,6 +131,8 @@ namespace Match3.Stage
                     _isTouchDown = true;                            // 클릭 상태 on
                     _blockDownPos = blockPos;                       // 클릭한 블럭 위치
                     _clickPos = point;                              // 클릭한 로컬 좌표
+
+                    Debug.Log($"클릭한 위치의 블록 좌표는 {_blockDownPos.row}, {_blockDownPos.col}");
                 }
             }
             // 마우스 버튼 클릭 후 손을 떼는 시점의 좌표 출력
@@ -108,12 +140,33 @@ namespace Match3.Stage
             {
                 Vector2 point = _inputManager._touch2BoardPosition;
                 _eSwipe swipeDir = _inputManager.EvalSwipeDir(_clickPos, point);
+
+                Vector2 pos = new Vector2(point.x + 5, point.y * -1 + 5);
+                Debug.Log($"마우스 버튼을 뗀 위치의 블록 좌표는 {(int)pos.x}, {(int)pos.y}");
+
                 Debug.Log($"Swipe = {swipeDir}, Block = {_blockDownPos}");
 
                 if(swipeDir != _eSwipe.NONE)
                 {
+                    // ToDo : 스와이프일 때 아이템 블록 처리
                     _actionManager.DoSwipeAction(_blockDownPos.row, _blockDownPos.col, swipeDir);       // 스와이프 액션 요청
                 }
+                else
+                {
+                    // ToDo : 스와이프가 아닐 때 아이템 블록 처리
+                    if(_board.blocks[(int)pos.x, (int)pos.y]._breed > _eBlockBreed.ITEM && _board.blocks[(int)pos.x, (int)pos.y]._breed < _eBlockBreed.ITEM_MAX)
+                    {
+                        Debug.Log("아이템 블록 제거");
+                        _actionManager.DoSwipeAction((int)pos.x, (int)pos.y, swipeDir);
+
+                        // 블록을 제거하기 위한 조건
+                        // 1. 스와이프가 아닐 때도 EvaluateBoard를 실행하여 그 이후 처리
+                        // 2. 클릭한 블록이 아이템 타입인지 판단하고 아이템이면 swipeDir == _eSwipe.NONE일 때도 스와이프 액션을 처리하도록 수정
+                        // 3. 아이템을 포함한 제거할 대상 블록의 _eBlockStatus를 MATCH로 변경
+                        // 4. 아이템을 포함한 제거할 대상 블록의 _breed를 모두 동일하게 변경, 블록 모습은 변경하지 않음
+                    }
+                }
+
 
                 _isTouchDown = false;
             }

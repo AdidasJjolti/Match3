@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Quest;
 using Util;
+using Match3.Stage;
 
 namespace Match3.Board
 {

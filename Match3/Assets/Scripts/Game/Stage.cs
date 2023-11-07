@@ -111,6 +111,17 @@ namespace Match3.Stage
         {
             actionResult.value = false;     // 코루틴 리턴값 리셋
 
+            // 스와이프가 유효하지 않지만 클릭한 블록이 아이템이면 actionResult를 true로 판단하고 코루틴 탈출
+            if(swipeDir == _eSwipe.NONE)
+            {
+                if(blocks[nRow, nCol].breed > _eBlockBreed.ITEM && blocks[nRow, nCol].breed < _eBlockBreed.ITEM_MAX)
+                {
+                    Debug.Log("유효한 스와이프는 아니지만 아이템 블록이라서 통과");
+                    actionResult.value = true;
+                    yield break;
+                }
+            }
+
             // 스와이프되는 블럭의 위치 구하기
             int nSwipeRow = nRow, nSwipeCol = nCol;
             nSwipeRow += swipeDir.GetTargetCol();
