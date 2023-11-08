@@ -16,7 +16,6 @@ namespace Scriptable
 
         public GameObject GetExplosionObject(_eBlockQuestType questType)
         {
-            //ToDo : explosion 게임 오브젝트를 담고 있는 풀에 접근해서 남아 있는 explosion을 가져오기
             switch(questType)
             {
                 case _eBlockQuestType.CLEAR_SIMPLE:

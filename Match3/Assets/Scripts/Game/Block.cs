@@ -155,7 +155,7 @@ namespace Match3.Board
         // 3매치 대상이 되는 블럭인지 검사, EMPTY 타입이 아닌 블럭 검사
         public bool IsMatchableBlock()
         {
-            return (type == _eBlockType.BASIC);
+            return (type == _eBlockType.BASIC || type == _eBlockType.ITEM);
         }
 
         // to의 위치로 블럭을 이동하는 메서드

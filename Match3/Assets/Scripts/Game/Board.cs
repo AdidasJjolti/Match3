@@ -176,76 +176,92 @@ namespace Match3.Board
 
             int listSize = clearBlocks.Count;
 
-            bool isSameBlock = true;
-
-            // 아이템 블록 생성 조건 1
-            // 모두 같은 종류의 블록이고 clearBlocks의 크기가 3보다 크면 아이템 블록 생성 코드 실행
-            for(int i = 1; i < listSize; i++)
+            // 이미 제거할 블록에 아이템이 포함된 경우 체크
+            bool containItem = false;
+            for(int i = 0; i < clearBlocks.Count; i++)
             {
-                if(clearBlocks[0].breed != clearBlocks[i].breed)
+                if(clearBlocks[i].type == _eBlockType.ITEM)
                 {
-                    isSameBlock = false;
+                    containItem = true;
                     break;
                 }
             }
 
-            if (listSize > 3 && isSameBlock)
+            // 이미 제거할 블록 리스트에 아이템이 포함된 경우 다시 아이템을 생성하는 로직을 실행하지 않음
+            if(!containItem)
             {
-                // 리스트에서 임의의 블록을 선정하여 블록 매치 갯수에 맞는 아이템으로 변경
-                int num = Random.Range(0, listSize);
-                clearBlocks[num].type = _eBlockType.ITEM;
-                clearBlocks[num].blockBehaviour.UpdateView(clearBlocks);
-                clearBlocks[num].durability = 1;
-                clearBlocks[num]._match = _eMatchType.NONE;
-                clearBlocks[num]._questType = _eBlockQuestType.CLEAR_SIMPLE;
-                clearBlocks[num]._status = _eBlockStatus.NORMAL;
+                bool isSameBlock = true;
 
-                // 생성된 아이템 블록을 _blocks 배열에 다시 입력
-                float row = clearBlocks[num].blockObj.localPosition.x + 4.5f;
-                float col = 4.5f - clearBlocks[num].blockObj.localPosition.y;
-                _blocks[(int)row, (int)col] = clearBlocks[num].GetComponent<Block>();
-
-                clearBlocks.RemoveAt(num);
-            }
-
-            // 아이템 생성 조건 2
-            // 서로 다른 두 종류의 블록이면 _eMatchType 검사하여 THREE가 아닌 블록이 있는지 확인
-            // _eMatchType이 THREE가 아닌 블록이 있다면 해당 블록들 중에서 아이템 블록을 생성
-
-            List<int> reserveBlocks = new List<int>();  // _eMatchType이 THREE가 아닌 블록의 위치를 저장할 리스트
-            List<Block> resBlocks = new List<Block>();  // _eMatchType이 THREE가 아닌 블록을 저장할 리스트
-            int idx = 0;                                // 아이템 블록을 생성할 clearBlocks의 인덱스 저장
-
-            if (!isSameBlock)
-            {
-                for(int i = 0; i < clearBlocks.Count; i++)
+                // 아이템 블록 생성 조건 1
+                // 모두 같은 종류의 블록이고 clearBlocks의 크기가 3보다 크면 아이템 블록 생성 코드 실행
+                for (int i = 1; i < listSize; i++)
                 {
-                    if(clearBlocks[i]._match == _eMatchType.FOUR || clearBlocks[i]._match == _eMatchType.FIVE)
+                    if (clearBlocks[0].breed != clearBlocks[i].breed)
                     {
-                        reserveBlocks.Add(i);
-                        resBlocks.Add(clearBlocks[i]);
+                        isSameBlock = false;
+                        break;
                     }
                 }
 
-                if(reserveBlocks.Count > 0)
+                if (listSize > 3 && isSameBlock)
                 {
-                    idx = reserveBlocks[Random.Range(0, reserveBlocks.Count)];  // _eMatchType이 THREE가 아닌 블록 중 1개를 뽑은 clearBlocks 리스트 내 인덱스
-
-                    clearBlocks[idx].type = _eBlockType.ITEM;
-                    clearBlocks[idx].blockBehaviour.UpdateView(resBlocks);
-                    clearBlocks[idx].durability = 1;
-                    clearBlocks[idx]._match = _eMatchType.NONE;
-                    clearBlocks[idx]._questType = _eBlockQuestType.CLEAR_SIMPLE;
-                    clearBlocks[idx]._status = _eBlockStatus.NORMAL;
+                    // 리스트에서 임의의 블록을 선정하여 블록 매치 갯수에 맞는 아이템으로 변경
+                    int num = Random.Range(0, listSize);
+                    clearBlocks[num].type = _eBlockType.ITEM;
+                    clearBlocks[num].blockBehaviour.UpdateView(clearBlocks);
+                    clearBlocks[num].durability = 1;
+                    clearBlocks[num]._match = _eMatchType.NONE;
+                    clearBlocks[num]._questType = _eBlockQuestType.CLEAR_SIMPLE;
+                    clearBlocks[num]._status = _eBlockStatus.NORMAL;
 
                     // 생성된 아이템 블록을 _blocks 배열에 다시 입력
-                    float row = clearBlocks[idx].blockObj.localPosition.x + 4.5f;
-                    float col = 4.5f - clearBlocks[idx].blockObj.localPosition.y;
-                    _blocks[(int)row, (int)col] = clearBlocks[idx].GetComponent<Block>();
+                    float row = clearBlocks[num].blockObj.localPosition.x + 4.5f;
+                    float col = 4.5f - clearBlocks[num].blockObj.localPosition.y;
+                    _blocks[(int)row, (int)col] = clearBlocks[num].GetComponent<Block>();
 
-                    clearBlocks.RemoveAt(idx);
+                    clearBlocks.RemoveAt(num);
+                }
+
+                // 아이템 생성 조건 2
+                // 서로 다른 두 종류의 블록이면 _eMatchType 검사하여 THREE가 아닌 블록이 있는지 확인
+                // _eMatchType이 THREE가 아닌 블록이 있다면 해당 블록들 중에서 아이템 블록을 생성
+
+                List<int> reserveBlocks = new List<int>();  // _eMatchType이 THREE가 아닌 블록의 위치를 저장할 리스트
+                List<Block> resBlocks = new List<Block>();  // _eMatchType이 THREE가 아닌 블록을 저장할 리스트
+                int idx = 0;                                // 아이템 블록을 생성할 clearBlocks의 인덱스 저장
+
+                if (!isSameBlock)
+                {
+                    for (int i = 0; i < clearBlocks.Count; i++)
+                    {
+                        if (clearBlocks[i]._match == _eMatchType.FOUR || clearBlocks[i]._match == _eMatchType.FIVE)
+                        {
+                            reserveBlocks.Add(i);
+                            resBlocks.Add(clearBlocks[i]);
+                        }
+                    }
+
+                    if (reserveBlocks.Count > 0)
+                    {
+                        idx = reserveBlocks[Random.Range(0, reserveBlocks.Count)];  // _eMatchType이 THREE가 아닌 블록 중 1개를 뽑은 clearBlocks 리스트 내 인덱스
+
+                        clearBlocks[idx].type = _eBlockType.ITEM;
+                        clearBlocks[idx].blockBehaviour.UpdateView(resBlocks);
+                        clearBlocks[idx].durability = 1;
+                        clearBlocks[idx]._match = _eMatchType.NONE;
+                        clearBlocks[idx]._questType = _eBlockQuestType.CLEAR_SIMPLE;
+                        clearBlocks[idx]._status = _eBlockStatus.NORMAL;
+
+                        // 생성된 아이템 블록을 _blocks 배열에 다시 입력
+                        float row = clearBlocks[idx].blockObj.localPosition.x + 4.5f;
+                        float col = 4.5f - clearBlocks[idx].blockObj.localPosition.y;
+                        _blocks[(int)row, (int)col] = clearBlocks[idx].GetComponent<Block>();
+
+                        clearBlocks.RemoveAt(idx);
+                    }
                 }
             }
+
 
             // 리스트에 있는 블럭 모두 제거
             clearBlocks.ForEach((block) => block.Destroy());

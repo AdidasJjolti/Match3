@@ -140,4 +140,26 @@ public class G_TileMap2D : MonoBehaviour
     {
         return _height;
     }
+
+#if UNITY_EDITOR
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.F11))
+        {
+            var children = transform.GetComponentsInChildren<Transform>();
+            int count = 0;
+            foreach(var child in children)
+            {
+                if(child.name.Contains("Block"))
+                {
+                    count++;
+                }
+            }
+
+            Debug.Log($"현재 블록의 개수는 {count}개");
+        }
+    }
+
+#endif
 }

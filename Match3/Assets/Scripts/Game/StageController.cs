@@ -157,6 +157,33 @@ namespace Match3.Stage
                     if(_board.blocks[(int)pos.x, (int)pos.y]._breed > _eBlockBreed.ITEM && _board.blocks[(int)pos.x, (int)pos.y]._breed < _eBlockBreed.ITEM_MAX)
                     {
                         Debug.Log("아이템 블록 제거");
+
+                        switch(_board.blocks[(int)pos.x, (int)pos.y]._breed)
+                        {
+                            case _eBlockBreed.VERTICAL:
+                                for(int i = 0; i < _board._Row; i++)
+                                {
+                                    if(_board.blocks[(int)pos.x, i].type == _eBlockType.BASIC)
+                                    {
+                                        _board.blocks[(int)pos.x, i].breed = _eBlockBreed.VERTICAL;
+                                    }
+                                }
+                                break;
+
+                            case _eBlockBreed.HORIZONTAL:
+                                for (int i = 0; i < _board._Col; i++)
+                                {
+                                    if(_board.blocks[i, (int)pos.y].type == _eBlockType.BASIC)
+                                    {
+                                        _board.blocks[i, (int)pos.y].breed = _eBlockBreed.HORIZONTAL;
+                                    }
+                                }
+                                break;
+
+                            // ToDo : 폭탄 아이템 사용 시 블록 제거 로직 추가
+                            case _eBlockBreed.BOMB:
+                                break;
+                        }
                         _actionManager.DoSwipeAction((int)pos.x, (int)pos.y, swipeDir);
 
                         // 블록을 제거하기 위한 조건
