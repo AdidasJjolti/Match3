@@ -154,6 +154,13 @@ namespace Match3.Stage
                 else
                 {
                     // ToDo : 스와이프가 아닐 때 아이템 블록 처리
+
+                    // ToDo : 아이템 사용으로 다른 아이템도 같이 사용되는 상황 처리하기
+                    // ToDo : 가로 레이저 아이템을 사용 시 효과 범위 내에 세로 레이저가 있을 때 두 아이템 사이에 위치한 블록이 제거되지 않는 현상 추적
+                    // ToDo : 폭탄 아이템을 사용하여 가로/세로 레이저 아이템 효과를 적용하는 경우 특정 블록이 제거되지 않는 현상 추적
+                    // for문을 돌면서 특정 범위에 위치한 블록을 검사하지 않는 것인지 확인 필요
+                    // 두번째 아이템 효과를 적용하면서 breed가 서로 달라 clear가 되지 않는 블록이 생기는 것인지 확인 필요, _eMatchType 범위 내에 들어오지 않는 블록이 있는지 확인
+
                     if(_board.blocks[(int)pos.x, (int)pos.y]._breed > _eBlockBreed.ITEM && _board.blocks[(int)pos.x, (int)pos.y]._breed < _eBlockBreed.ITEM_MAX)
                     {
                         Debug.Log("아이템 블록 제거");
@@ -161,27 +168,52 @@ namespace Match3.Stage
                         switch(_board.blocks[(int)pos.x, (int)pos.y]._breed)
                         {
                             case _eBlockBreed.VERTICAL:
-                                for(int i = 0; i < _board._Row; i++)
+
+                                for (int i = 0; i < _board._Row; i++)
                                 {
                                     if(_board.blocks[(int)pos.x, i].type == _eBlockType.BASIC)
                                     {
                                         _board.blocks[(int)pos.x, i].breed = _eBlockBreed.VERTICAL;
                                     }
+                                    else if(_board.blocks[(int)pos.x, i].type == _eBlockType.ITEM)
+                                    {
+                                        ChangeAffectedBlocks((int)pos.x, i);
+                                    }
                                 }
                                 break;
 
                             case _eBlockBreed.HORIZONTAL:
+
                                 for (int i = 0; i < _board._Col; i++)
                                 {
                                     if(_board.blocks[i, (int)pos.y].type == _eBlockType.BASIC)
                                     {
                                         _board.blocks[i, (int)pos.y].breed = _eBlockBreed.HORIZONTAL;
                                     }
+                                    else if(_board.blocks[i, (int)pos.y].type == _eBlockType.ITEM)
+                                    {
+                                        ChangeAffectedBlocks(i, (int)pos.y);
+                                    }
                                 }
                                 break;
 
-                            // ToDo : 폭탄 아이템 사용 시 블록 제거 로직 추가
+                            // 폭탄 아이템 사용 시 1열 & 1행 내 모든 블록 제거 로직 추가
                             case _eBlockBreed.BOMB:
+
+                                for (int i = Mathf.Max(0, (int)pos.x - 1); i < Mathf.Min(_board._Row, (int)pos.x + 2); i++)
+                                {
+                                    for(int j = Mathf.Max(0, (int)pos.y - 1); j < Mathf.Min(_board._Col, (int)pos.y + 2); j++)
+                                    {
+                                        if (_board.blocks[i, j].type == _eBlockType.BASIC)
+                                        {
+                                            _board.blocks[i, j].breed = _eBlockBreed.BOMB;
+                                        }
+                                        else if(_board.blocks[i, j].type == _eBlockType.ITEM)
+                                        {
+                                            ChangeAffectedBlocks(i, j);
+                                        }
+                                    }
+                                }
                                 break;
                         }
                         _actionManager.DoSwipeAction((int)pos.x, (int)pos.y, swipeDir);
@@ -196,6 +228,61 @@ namespace Match3.Stage
 
 
                 _isTouchDown = false;
+            }
+        }
+
+        // 아이템 효과 범위 내에 들어온 블록 중에서 아이템 블록이 있는 경우 추가 처리 로직
+        void ChangeAffectedBlocks(int x, int y)
+        {
+            switch (_board.blocks[x, y]._breed)
+            {
+                case _eBlockBreed.VERTICAL:
+
+                    for (int i = 0; i < _board._Row; i++)
+                    {
+                        if (_board.blocks[x, i].type == _eBlockType.BASIC)
+                        {
+                            _board.blocks[x, i].breed = _eBlockBreed.VERTICAL;
+                        }
+                        //else if (_board.blocks[x, i].type == _eBlockType.ITEM)
+                        //{
+                        //    ChangeAffectedBlocks(x, i);
+                        //}
+                    }
+                    break;
+
+                case _eBlockBreed.HORIZONTAL:
+
+                    for (int i = 0; i < _board._Col; i++)
+                    {
+                        if (_board.blocks[i, y].type == _eBlockType.BASIC)
+                        {
+                            _board.blocks[i, y].breed = _eBlockBreed.HORIZONTAL;
+                        }
+                        //else if (_board.blocks[i, y].type == _eBlockType.ITEM)
+                        //{
+                        //    ChangeAffectedBlocks(i, y);
+                        //}
+                    }
+                    break;
+
+                case _eBlockBreed.BOMB:
+
+                    for (int i = Mathf.Max(0, x - 1); i < Mathf.Min(_board._Row, x + 2); i++)
+                    {
+                        for (int j = Mathf.Max(0, y - 1); j < Mathf.Min(_board._Col, y + 2); j++)
+                        {
+                            if (_board.blocks[i, j].type == _eBlockType.BASIC)
+                            {
+                                _board.blocks[i, j].breed = _eBlockBreed.BOMB;
+                            }
+                            //else if(_board.blocks[i, j].type == _eBlockType.ITEM)
+                            //{
+                            //    ChangeAffectedBlocks(i, j);
+                            //}
+                        }
+                    }
+                    break;
             }
         }
     }
