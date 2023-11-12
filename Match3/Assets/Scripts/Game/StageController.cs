@@ -155,17 +155,16 @@ namespace Match3.Stage
                 {
                     // ToDo : 스와이프가 아닐 때 아이템 블록 처리
 
-                    // ToDo : 아이템 사용으로 다른 아이템도 같이 사용되는 상황 처리하기
-                    // ToDo : 가로 레이저 아이템을 사용 시 효과 범위 내에 세로 레이저가 있을 때 두 아이템 사이에 위치한 블록이 제거되지 않는 현상 추적
-                    // ToDo : 폭탄 아이템을 사용하여 가로/세로 레이저 아이템 효과를 적용하는 경우 특정 블록이 제거되지 않는 현상 추적
-                    // for문을 돌면서 특정 범위에 위치한 블록을 검사하지 않는 것인지 확인 필요
-                    // 두번째 아이템 효과를 적용하면서 breed가 서로 달라 clear가 되지 않는 블록이 생기는 것인지 확인 필요, _eMatchType 범위 내에 들어오지 않는 블록이 있는지 확인
+                    // ToDo : 가끔 모퉁이에 생성된 폭탄 블록 주변 블록의 breed가 폭탄으로 설정되는 현상 발견하여 수정 필요
 
-                    if(_board.blocks[(int)pos.x, (int)pos.y]._breed > _eBlockBreed.ITEM && _board.blocks[(int)pos.x, (int)pos.y]._breed < _eBlockBreed.ITEM_MAX)
+                    // 클릭한 좌표에 위치한 블록 정보를 origin으로 정의
+                    var origin = _board.blocks[(int)pos.x, (int)pos.y];
+
+                    if (origin.breed > _eBlockBreed.ITEM && origin.breed < _eBlockBreed.ITEM_MAX)
                     {
                         Debug.Log("아이템 블록 제거");
 
-                        switch(_board.blocks[(int)pos.x, (int)pos.y]._breed)
+                        switch(origin.breed)
                         {
                             case _eBlockBreed.VERTICAL:
 
@@ -177,7 +176,7 @@ namespace Match3.Stage
                                     }
                                     else if(_board.blocks[(int)pos.x, i].type == _eBlockType.ITEM)
                                     {
-                                        ChangeAffectedBlocks((int)pos.x, i);
+                                        ChangeAffectedBlocks((int)pos.x, i, origin.breed);
                                     }
                                 }
                                 break;
@@ -192,7 +191,7 @@ namespace Match3.Stage
                                     }
                                     else if(_board.blocks[i, (int)pos.y].type == _eBlockType.ITEM)
                                     {
-                                        ChangeAffectedBlocks(i, (int)pos.y);
+                                        ChangeAffectedBlocks(i, (int)pos.y, origin.breed);
                                     }
                                 }
                                 break;
@@ -210,7 +209,7 @@ namespace Match3.Stage
                                         }
                                         else if(_board.blocks[i, j].type == _eBlockType.ITEM)
                                         {
-                                            ChangeAffectedBlocks(i, j);
+                                            ChangeAffectedBlocks(i, j, origin.breed);
                                         }
                                     }
                                 }
@@ -232,7 +231,7 @@ namespace Match3.Stage
         }
 
         // 아이템 효과 범위 내에 들어온 블록 중에서 아이템 블록이 있는 경우 추가 처리 로직
-        void ChangeAffectedBlocks(int x, int y)
+        void ChangeAffectedBlocks(int x, int y, _eBlockBreed originBreed)
         {
             switch (_board.blocks[x, y]._breed)
             {
@@ -242,7 +241,7 @@ namespace Match3.Stage
                     {
                         if (_board.blocks[x, i].type == _eBlockType.BASIC)
                         {
-                            _board.blocks[x, i].breed = _eBlockBreed.VERTICAL;
+                            _board.blocks[x, i].breed = originBreed;
                         }
                         //else if (_board.blocks[x, i].type == _eBlockType.ITEM)
                         //{
@@ -257,7 +256,7 @@ namespace Match3.Stage
                     {
                         if (_board.blocks[i, y].type == _eBlockType.BASIC)
                         {
-                            _board.blocks[i, y].breed = _eBlockBreed.HORIZONTAL;
+                            _board.blocks[i, y].breed = originBreed;
                         }
                         //else if (_board.blocks[i, y].type == _eBlockType.ITEM)
                         //{
@@ -274,7 +273,7 @@ namespace Match3.Stage
                         {
                             if (_board.blocks[i, j].type == _eBlockType.BASIC)
                             {
-                                _board.blocks[i, j].breed = _eBlockBreed.BOMB;
+                                _board.blocks[i, j].breed = originBreed;
                             }
                             //else if(_board.blocks[i, j].type == _eBlockType.ITEM)
                             //{
@@ -284,6 +283,8 @@ namespace Match3.Stage
                     }
                     break;
             }
+
+            _board.blocks[x, y].breed = originBreed;
         }
     }
 }

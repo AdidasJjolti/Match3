@@ -29,12 +29,20 @@ namespace Match3.Stage
         {
             Debug.Assert(nRow >= 0 && nRow < _stage._Row && nCol >= 0 && nCol < _stage._Col);       // 클릭한 블럭 위치가 스테이지 범위 밖이면 에러 로그 출력
 
+            bool isValidSwipe = _stage.IsValideSwipe(nRow, nCol, swipeDir);
+
             // 유효한 스와이프이거나 클릭한 블록이 아이템인 경우 if 조건 true 판단
-            if(_stage.IsValideSwipe(nRow, nCol, swipeDir) || (_stage.board.blocks[nRow, nCol]._breed > Board._eBlockBreed.ITEM && _stage.board.blocks[nRow, nCol]._breed < Board._eBlockBreed.ITEM_MAX))
+            if (isValidSwipe || (!isValidSwipe && CheckItemBlock(nRow, nCol)))
             {
                 Debug.Log("유효한 스와이프이거나 클릭한 블록이 아이템이야.");
                 StartCoroutine(CoDoSwipeAction(nRow, nCol, swipeDir));
             }
+        }
+
+        public bool CheckItemBlock(int x, int y)
+        {
+            var block = _stage.board.blocks[x, y];
+            return block.type == Board._eBlockType.ITEM && (block.breed > Board._eBlockBreed.ITEM && block.breed < Board._eBlockBreed.ITEM_MAX);
         }
 
         IEnumerator CoDoSwipeAction(int nRow, int nCol, _eSwipe swipeDir)
