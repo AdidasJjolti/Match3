@@ -339,7 +339,7 @@ namespace Match3.Board
                 matchedBlockList.Insert(0, block);
             }
 
-            if(matchedBlockList.Count >= 3)
+            if(matchedBlockList.Count >= 3 || (matchedBlockList.Count < 3 && matchedBlockList[0].breed == _eBlockBreed.BOMB))
             {
                 foreach (var item in matchedBlockList)
                 {
@@ -399,6 +399,12 @@ namespace Match3.Board
         void SetBlockStatusMatched(List<Block> blockList, bool horz)        // 3매치 블럭의 배치가 가로면 true, 세로면 false
         {
             int matchCount = blockList.Count;
+
+            if(matchCount < 3 && blockList[0].breed == _eBlockBreed.BOMB)
+            {
+                matchCount = 3;
+            }
+
             blockList.ForEach(block => block.UpdateBlockStatusMatched((_eMatchType)matchCount));
             
             foreach(var block in blockList)
