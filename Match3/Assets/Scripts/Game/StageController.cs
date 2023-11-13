@@ -155,33 +155,38 @@ namespace Match3.Stage
                 {
                     // ToDo : 스와이프가 아닐 때 아이템 블록 처리
 
-                    // ToDo : 가끔 모퉁이에 생성된 폭탄 블록 주변 블록의 breed가 폭탄으로 설정되는 현상 발견하여 수정 필요
+                    // 이미 체크한 아이템 블록을 저장, 아이템 블록 효과 실행 전에 리스트에 있는 블록인지 우선 체크하여 스택 오버플로우를 방지
+                    List<Block> checkBlocks = new List<Block>();
 
                     // 클릭한 좌표에 위치한 블록 정보를 origin으로 정의
                     var origin = _board.blocks[(int)pos.x, (int)pos.y];
+                    checkBlocks.Add(origin);
+
 
                     if (origin.breed > _eBlockBreed.ITEM && origin.breed < _eBlockBreed.ITEM_MAX)
                     {
                         Debug.Log("아이템 블록 제거");
 
-                        switch(origin.breed)
+                        ChangeAffectedBlocks((int)pos.x, (int)pos.y, origin.breed, checkBlocks);
+
+                        switch (origin.breed)
                         {
                             case _eBlockBreed.VERTICAL:
 
                                 for (int i = 0; i < _board._Row; i++)
                                 {
-                                    if((int)pos.y == i)
-                                    {
-                                        continue;
-                                    }
+                                    //if ((int)pos.y == i)
+                                    //{
+                                    //    continue;
+                                    //}
 
-                                    if(_board.blocks[(int)pos.x, i].type == _eBlockType.BASIC)
+                                    if (_board.blocks[(int)pos.x, i].type == _eBlockType.BASIC)
                                     {
                                         _board.blocks[(int)pos.x, i].breed = _eBlockBreed.VERTICAL;
                                     }
-                                    else if(_board.blocks[(int)pos.x, i].type == _eBlockType.ITEM)
+                                    else if (_board.blocks[(int)pos.x, i].type == _eBlockType.ITEM)
                                     {
-                                        ChangeAffectedBlocks((int)pos.x, i, origin.breed);
+                                        ChangeAffectedBlocks((int)pos.x, i, origin.breed, checkBlocks);
                                     }
                                 }
                                 break;
@@ -190,18 +195,18 @@ namespace Match3.Stage
 
                                 for (int i = 0; i < _board._Col; i++)
                                 {
-                                    if ((int)pos.x == i)
-                                    {
-                                        continue;
-                                    }
+                                    //if ((int)pos.x == i)
+                                    //{
+                                    //    continue;
+                                    //}
 
                                     if (_board.blocks[i, (int)pos.y].type == _eBlockType.BASIC)
                                     {
                                         _board.blocks[i, (int)pos.y].breed = _eBlockBreed.HORIZONTAL;
                                     }
-                                    else if(_board.blocks[i, (int)pos.y].type == _eBlockType.ITEM)
+                                    else if (_board.blocks[i, (int)pos.y].type == _eBlockType.ITEM)
                                     {
-                                        ChangeAffectedBlocks(i, (int)pos.y, origin.breed);
+                                        ChangeAffectedBlocks(i, (int)pos.y, origin.breed, checkBlocks);
                                     }
                                 }
                                 break;
@@ -211,20 +216,20 @@ namespace Match3.Stage
 
                                 for (int i = Mathf.Max(0, (int)pos.x - 1); i < Mathf.Min(_board._Row, (int)pos.x + 2); i++)
                                 {
-                                    for(int j = Mathf.Max(0, (int)pos.y - 1); j < Mathf.Min(_board._Col, (int)pos.y + 2); j++)
+                                    for (int j = Mathf.Max(0, (int)pos.y - 1); j < Mathf.Min(_board._Col, (int)pos.y + 2); j++)
                                     {
-                                        if(i == (int)pos.x && j == (int)pos.y)
-                                        {
-                                            continue;
-                                        }
+                                        //if (i == (int)pos.x && j == (int)pos.y)
+                                        //{
+                                        //    continue;
+                                        //}
 
                                         if (_board.blocks[i, j].type == _eBlockType.BASIC)
                                         {
                                             _board.blocks[i, j].breed = _eBlockBreed.BOMB;
                                         }
-                                        else if(_board.blocks[i, j].type == _eBlockType.ITEM)
+                                        else if (_board.blocks[i, j].type == _eBlockType.ITEM)
                                         {
-                                            ChangeAffectedBlocks(i, j, origin.breed);
+                                            ChangeAffectedBlocks(i, j, origin.breed, checkBlocks);
                                         }
                                     }
                                 }
@@ -246,22 +251,29 @@ namespace Match3.Stage
         }
 
         // 아이템 효과 범위 내에 들어온 블록 중에서 아이템 블록이 있는 경우 추가 처리 로직
-        void ChangeAffectedBlocks(int x, int y, _eBlockBreed originBreed)
+        void ChangeAffectedBlocks(int x, int y, _eBlockBreed originBreed, List<Block> checkBlocks)
         {
+            checkBlocks.Add(_board.blocks[x, y]);
+
             switch (_board.blocks[x, y]._breed)
             {
                 case _eBlockBreed.VERTICAL:
 
                     for (int i = 0; i < _board._Row; i++)
                     {
+                        if(checkBlocks.Contains(_board.blocks[x, i]))
+                        {
+                            continue;
+                        }
+
                         if (_board.blocks[x, i].type == _eBlockType.BASIC)
                         {
                             _board.blocks[x, i].breed = originBreed;
                         }
-                        //else if (_board.blocks[x, i].type == _eBlockType.ITEM)
-                        //{
-                        //    ChangeAffectedBlocks(x, i);
-                        //}
+                        else if (_board.blocks[x, i].type == _eBlockType.ITEM)
+                        {
+                            ChangeAffectedBlocks(x, i, originBreed, checkBlocks);
+                        }
                     }
                     break;
 
@@ -269,14 +281,19 @@ namespace Match3.Stage
 
                     for (int i = 0; i < _board._Col; i++)
                     {
+                        if (checkBlocks.Contains(_board.blocks[i, y]))
+                        {
+                            continue;
+                        }
+
                         if (_board.blocks[i, y].type == _eBlockType.BASIC)
                         {
                             _board.blocks[i, y].breed = originBreed;
                         }
-                        //else if (_board.blocks[i, y].type == _eBlockType.ITEM)
-                        //{
-                        //    ChangeAffectedBlocks(i, y);
-                        //}
+                        else if (_board.blocks[i, y].type == _eBlockType.ITEM)
+                        {
+                            ChangeAffectedBlocks(i, y, originBreed, checkBlocks);
+                        }
                     }
                     break;
 
@@ -286,14 +303,19 @@ namespace Match3.Stage
                     {
                         for (int j = Mathf.Max(0, y - 1); j < Mathf.Min(_board._Col, y + 2); j++)
                         {
+                            if (checkBlocks.Contains(_board.blocks[i, j]))
+                            {
+                                continue;
+                            }
+
                             if (_board.blocks[i, j].type == _eBlockType.BASIC)
                             {
                                 _board.blocks[i, j].breed = originBreed;
                             }
-                            //else if(_board.blocks[i, j].type == _eBlockType.ITEM)
-                            //{
-                            //    ChangeAffectedBlocks(i, j);
-                            //}
+                            else if (_board.blocks[i, j].type == _eBlockType.ITEM)
+                            {
+                                ChangeAffectedBlocks(i, j, originBreed, checkBlocks);
+                            }
                         }
                     }
                     break;
