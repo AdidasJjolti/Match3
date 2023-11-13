@@ -339,7 +339,7 @@ namespace Match3.Board
                 matchedBlockList.Insert(0, block);
             }
 
-            if(matchedBlockList.Count >= 3 || (matchedBlockList.Count < 3 && matchedBlockList[0].breed == _eBlockBreed.BOMB))
+            if(matchedBlockList.Count >= 3 || (matchedBlockList.Count == 2 && matchedBlockList[0].breed == _eBlockBreed.BOMB))
             {
                 foreach (var item in matchedBlockList)
                 {
@@ -380,7 +380,7 @@ namespace Match3.Board
                 matchedBlockList.Insert(0, block);
             }
 
-            if (matchedBlockList.Count >= 3)
+            if (matchedBlockList.Count >= 3 || (matchedBlockList.Count == 2 && matchedBlockList[0].breed == _eBlockBreed.BOMB))
             {
                 foreach (var item in matchedBlockList)
                 {
@@ -400,7 +400,7 @@ namespace Match3.Board
         {
             int matchCount = blockList.Count;
 
-            if(matchCount < 3 && blockList[0].breed == _eBlockBreed.BOMB)
+            if(matchCount == 2 && blockList[0].breed == _eBlockBreed.BOMB)
             {
                 matchCount = 3;
             }

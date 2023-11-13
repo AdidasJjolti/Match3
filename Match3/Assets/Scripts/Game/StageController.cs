@@ -170,6 +170,11 @@ namespace Match3.Stage
 
                                 for (int i = 0; i < _board._Row; i++)
                                 {
+                                    if((int)pos.y == i)
+                                    {
+                                        continue;
+                                    }
+
                                     if(_board.blocks[(int)pos.x, i].type == _eBlockType.BASIC)
                                     {
                                         _board.blocks[(int)pos.x, i].breed = _eBlockBreed.VERTICAL;
@@ -185,7 +190,12 @@ namespace Match3.Stage
 
                                 for (int i = 0; i < _board._Col; i++)
                                 {
-                                    if(_board.blocks[i, (int)pos.y].type == _eBlockType.BASIC)
+                                    if ((int)pos.x == i)
+                                    {
+                                        continue;
+                                    }
+
+                                    if (_board.blocks[i, (int)pos.y].type == _eBlockType.BASIC)
                                     {
                                         _board.blocks[i, (int)pos.y].breed = _eBlockBreed.HORIZONTAL;
                                     }
@@ -203,6 +213,11 @@ namespace Match3.Stage
                                 {
                                     for(int j = Mathf.Max(0, (int)pos.y - 1); j < Mathf.Min(_board._Col, (int)pos.y + 2); j++)
                                     {
+                                        if(i == (int)pos.x && j == (int)pos.y)
+                                        {
+                                            continue;
+                                        }
+
                                         if (_board.blocks[i, j].type == _eBlockType.BASIC)
                                         {
                                             _board.blocks[i, j].breed = _eBlockBreed.BOMB;
