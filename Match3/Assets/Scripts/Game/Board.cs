@@ -380,7 +380,7 @@ namespace Match3.Board
                 matchedBlockList.Insert(0, block);
             }
 
-            if (matchedBlockList.Count >= 3 || (matchedBlockList.Count == 2 && matchedBlockList[0].breed == _eBlockBreed.BOMB))
+            if (matchedBlockList.Count >= 3 || (matchedBlockList.Count == 2 && matchedBlockList[0].breed > _eBlockBreed.ITEM && matchedBlockList[0].breed < _eBlockBreed.ITEM_MAX))
             {
                 foreach (var item in matchedBlockList)
                 {

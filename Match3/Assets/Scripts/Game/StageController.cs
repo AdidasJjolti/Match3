@@ -160,7 +160,7 @@ namespace Match3.Stage
 
                     // 클릭한 좌표에 위치한 블록 정보를 origin으로 정의
                     var origin = _board.blocks[(int)pos.x, (int)pos.y];
-                    checkBlocks.Add(origin);
+                    //checkBlocks.Add(origin);
 
 
                     if (origin.breed > _eBlockBreed.ITEM && origin.breed < _eBlockBreed.ITEM_MAX)
@@ -169,72 +169,72 @@ namespace Match3.Stage
 
                         ChangeAffectedBlocks((int)pos.x, (int)pos.y, origin.breed, checkBlocks);
 
-                        switch (origin.breed)
-                        {
-                            case _eBlockBreed.VERTICAL:
+                        //switch (origin.breed)
+                        //{
+                        //    case _eBlockBreed.VERTICAL:
 
-                                for (int i = 0; i < _board._Row; i++)
-                                {
-                                    //if ((int)pos.y == i)
-                                    //{
-                                    //    continue;
-                                    //}
+                        //        for (int i = 0; i < _board._Row; i++)
+                        //        {
+                        //            //if ((int)pos.y == i)
+                        //            //{
+                        //            //    continue;
+                        //            //}
 
-                                    if (_board.blocks[(int)pos.x, i].type == _eBlockType.BASIC)
-                                    {
-                                        _board.blocks[(int)pos.x, i].breed = _eBlockBreed.VERTICAL;
-                                    }
-                                    else if (_board.blocks[(int)pos.x, i].type == _eBlockType.ITEM)
-                                    {
-                                        ChangeAffectedBlocks((int)pos.x, i, origin.breed, checkBlocks);
-                                    }
-                                }
-                                break;
+                        //            if (_board.blocks[(int)pos.x, i].type == _eBlockType.BASIC)
+                        //            {
+                        //                _board.blocks[(int)pos.x, i].breed = _eBlockBreed.VERTICAL;
+                        //            }
+                        //            else if (_board.blocks[(int)pos.x, i].type == _eBlockType.ITEM)
+                        //            {
+                        //                ChangeAffectedBlocks((int)pos.x, i, origin.breed, checkBlocks);
+                        //            }
+                        //        }
+                        //        break;
 
-                            case _eBlockBreed.HORIZONTAL:
+                        //    case _eBlockBreed.HORIZONTAL:
 
-                                for (int i = 0; i < _board._Col; i++)
-                                {
-                                    //if ((int)pos.x == i)
-                                    //{
-                                    //    continue;
-                                    //}
+                        //        for (int i = 0; i < _board._Col; i++)
+                        //        {
+                        //            //if ((int)pos.x == i)
+                        //            //{
+                        //            //    continue;
+                        //            //}
 
-                                    if (_board.blocks[i, (int)pos.y].type == _eBlockType.BASIC)
-                                    {
-                                        _board.blocks[i, (int)pos.y].breed = _eBlockBreed.HORIZONTAL;
-                                    }
-                                    else if (_board.blocks[i, (int)pos.y].type == _eBlockType.ITEM)
-                                    {
-                                        ChangeAffectedBlocks(i, (int)pos.y, origin.breed, checkBlocks);
-                                    }
-                                }
-                                break;
+                        //            if (_board.blocks[i, (int)pos.y].type == _eBlockType.BASIC)
+                        //            {
+                        //                _board.blocks[i, (int)pos.y].breed = _eBlockBreed.HORIZONTAL;
+                        //            }
+                        //            else if (_board.blocks[i, (int)pos.y].type == _eBlockType.ITEM)
+                        //            {
+                        //                ChangeAffectedBlocks(i, (int)pos.y, origin.breed, checkBlocks);
+                        //            }
+                        //        }
+                        //        break;
 
-                            // 폭탄 아이템 사용 시 1열 & 1행 내 모든 블록 제거 로직 추가
-                            case _eBlockBreed.BOMB:
+                        //    // 폭탄 아이템 사용 시 1열 & 1행 내 모든 블록 제거 로직 추가
+                        //    case _eBlockBreed.BOMB:
 
-                                for (int i = Mathf.Max(0, (int)pos.x - 1); i < Mathf.Min(_board._Row, (int)pos.x + 2); i++)
-                                {
-                                    for (int j = Mathf.Max(0, (int)pos.y - 1); j < Mathf.Min(_board._Col, (int)pos.y + 2); j++)
-                                    {
-                                        //if (i == (int)pos.x && j == (int)pos.y)
-                                        //{
-                                        //    continue;
-                                        //}
+                        //        for (int i = Mathf.Max(0, (int)pos.x - 1); i < Mathf.Min(_board._Row, (int)pos.x + 2); i++)
+                        //        {
+                        //            for (int j = Mathf.Max(0, (int)pos.y - 1); j < Mathf.Min(_board._Col, (int)pos.y + 2); j++)
+                        //            {
+                        //                //if (i == (int)pos.x && j == (int)pos.y)
+                        //                //{
+                        //                //    continue;
+                        //                //}
 
-                                        if (_board.blocks[i, j].type == _eBlockType.BASIC)
-                                        {
-                                            _board.blocks[i, j].breed = _eBlockBreed.BOMB;
-                                        }
-                                        else if (_board.blocks[i, j].type == _eBlockType.ITEM)
-                                        {
-                                            ChangeAffectedBlocks(i, j, origin.breed, checkBlocks);
-                                        }
-                                    }
-                                }
-                                break;
-                        }
+                        //                if (_board.blocks[i, j].type == _eBlockType.BASIC)
+                        //                {
+                        //                    _board.blocks[i, j].breed = _eBlockBreed.BOMB;
+                        //                }
+                        //                else if (_board.blocks[i, j].type == _eBlockType.ITEM)
+                        //                {
+                        //                    ChangeAffectedBlocks(i, j, origin.breed, checkBlocks);
+                        //                }
+                        //            }
+                        //        }
+                        //        break;
+                        //}
                         _actionManager.DoSwipeAction((int)pos.x, (int)pos.y, swipeDir);
 
                         // 블록을 제거하기 위한 조건
