@@ -26,33 +26,8 @@ namespace Match3.Stage
 
         Match3.Board.Board _board;
 
-        //public static StageController _instance;
-        //public static StageController Instance
-        //{
-        //    get
-        //    {
-        //        if(_instance == null)
-        //        {
-        //            _instance = new StageController();
-        //        }
-
-        //        return _instance;
-        //    }
-        //}
-
         void Awake()
         {
-            //if (_instance == null)
-            //{
-            //    _instance = this;
-            //}
-            //else if (_instance != this)
-            //{
-            //    Destroy(gameObject);
-            //}
-
-            //DontDestroyOnLoad(gameObject);
-
             MapDataLoader _mapDataLoader = new MapDataLoader();
             MapData mapData = _mapDataLoader.Load($"stage{_stageNumber+1}");              // stage1 데이터 파일을 불러오기
             _tilemap2D.GenerateTileMap(mapData);                                          // mapData를 바탕으로 타일 생성
@@ -100,7 +75,7 @@ namespace Match3.Stage
         void BuildStage()
         {
             _stage = StageBuilder.BuildStage(nStage : _stageNumber, _tilemap2D);
-            _actionManager = new ActionManager(_tilemap2D.transform, _stage);
+            _actionManager = new ActionManager(_tilemap2D.transform, _stage, this);
 
             if (_stage != null)
             {
@@ -153,15 +128,11 @@ namespace Match3.Stage
                 }
                 else
                 {
-                    // ToDo : 스와이프가 아닐 때 아이템 블록 처리
-
                     // 이미 체크한 아이템 블록을 저장, 아이템 블록 효과 실행 전에 리스트에 있는 블록인지 우선 체크하여 스택 오버플로우를 방지
                     List<Block> checkBlocks = new List<Block>();
 
                     // 클릭한 좌표에 위치한 블록 정보를 origin으로 정의
                     var origin = _board.blocks[(int)pos.x, (int)pos.y];
-                    //checkBlocks.Add(origin);
-
 
                     if (origin.breed > _eBlockBreed.ITEM && origin.breed < _eBlockBreed.ITEM_MAX)
                     {
@@ -169,72 +140,6 @@ namespace Match3.Stage
 
                         ChangeAffectedBlocks((int)pos.x, (int)pos.y, origin.breed, checkBlocks);
 
-                        //switch (origin.breed)
-                        //{
-                        //    case _eBlockBreed.VERTICAL:
-
-                        //        for (int i = 0; i < _board._Row; i++)
-                        //        {
-                        //            //if ((int)pos.y == i)
-                        //            //{
-                        //            //    continue;
-                        //            //}
-
-                        //            if (_board.blocks[(int)pos.x, i].type == _eBlockType.BASIC)
-                        //            {
-                        //                _board.blocks[(int)pos.x, i].breed = _eBlockBreed.VERTICAL;
-                        //            }
-                        //            else if (_board.blocks[(int)pos.x, i].type == _eBlockType.ITEM)
-                        //            {
-                        //                ChangeAffectedBlocks((int)pos.x, i, origin.breed, checkBlocks);
-                        //            }
-                        //        }
-                        //        break;
-
-                        //    case _eBlockBreed.HORIZONTAL:
-
-                        //        for (int i = 0; i < _board._Col; i++)
-                        //        {
-                        //            //if ((int)pos.x == i)
-                        //            //{
-                        //            //    continue;
-                        //            //}
-
-                        //            if (_board.blocks[i, (int)pos.y].type == _eBlockType.BASIC)
-                        //            {
-                        //                _board.blocks[i, (int)pos.y].breed = _eBlockBreed.HORIZONTAL;
-                        //            }
-                        //            else if (_board.blocks[i, (int)pos.y].type == _eBlockType.ITEM)
-                        //            {
-                        //                ChangeAffectedBlocks(i, (int)pos.y, origin.breed, checkBlocks);
-                        //            }
-                        //        }
-                        //        break;
-
-                        //    // 폭탄 아이템 사용 시 1열 & 1행 내 모든 블록 제거 로직 추가
-                        //    case _eBlockBreed.BOMB:
-
-                        //        for (int i = Mathf.Max(0, (int)pos.x - 1); i < Mathf.Min(_board._Row, (int)pos.x + 2); i++)
-                        //        {
-                        //            for (int j = Mathf.Max(0, (int)pos.y - 1); j < Mathf.Min(_board._Col, (int)pos.y + 2); j++)
-                        //            {
-                        //                //if (i == (int)pos.x && j == (int)pos.y)
-                        //                //{
-                        //                //    continue;
-                        //                //}
-
-                        //                if (_board.blocks[i, j].type == _eBlockType.BASIC)
-                        //                {
-                        //                    _board.blocks[i, j].breed = _eBlockBreed.BOMB;
-                        //                }
-                        //                else if (_board.blocks[i, j].type == _eBlockType.ITEM)
-                        //                {
-                        //                    ChangeAffectedBlocks(i, j, origin.breed, checkBlocks);
-                        //                }
-                        //            }
-                        //        }
-                        //        break;
-                        //}
                         _actionManager.DoSwipeAction((int)pos.x, (int)pos.y, swipeDir);
 
                         // 블록을 제거하기 위한 조건
@@ -251,7 +156,7 @@ namespace Match3.Stage
         }
 
         // 아이템 효과 범위 내에 들어온 블록 중에서 아이템 블록이 있는 경우 추가 처리 로직
-        void ChangeAffectedBlocks(int x, int y, _eBlockBreed originBreed, List<Block> checkBlocks)
+        public void ChangeAffectedBlocks(int x, int y, _eBlockBreed originBreed, List<Block> checkBlocks)
         {
             checkBlocks.Add(_board.blocks[x, y]);
 

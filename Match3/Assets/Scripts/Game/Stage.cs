@@ -122,6 +122,7 @@ namespace Match3.Stage
                 }
             }
 
+
             // 스와이프되는 블럭의 위치 구하기
             int nSwipeRow = nRow, nSwipeCol = nCol;
             nSwipeRow += swipeDir.GetTargetCol();
