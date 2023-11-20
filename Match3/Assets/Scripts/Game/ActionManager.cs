@@ -107,14 +107,19 @@ namespace Match3.Stage
                 List<Block> checkBlocks = new List<Block>();
 
                 // ToDo : baseBlock과 targetBlock의 x, y 좌표값을 구하는 메서드 찾기
+
+                // 로컬 좌표를 보드의 블럭 인덱스로 변환
+                Vector2 baseBlockPos = new Vector2(baseBlock.blockObj.position.x + (_stage._Col / 2.0f), baseBlock.blockObj.position.y * -1 + (_stage._Row / 2.0f));
+                Vector2 targetBlockPos = new Vector2(targetBlock.blockObj.position.x + (_stage._Col / 2.0f), targetBlock.blockObj.position.y * -1 + (_stage._Row / 2.0f));
+
                 if (baseBlock.type == _eBlockType.ITEM)
                 {
-                    _stageController.ChangeAffectedBlocks((int)baseBlock.blockObj.position.x, (int)baseBlock.blockObj.position.y, baseBlock.breed, checkBlocks);
+                    _stageController.ChangeAffectedBlocks((int)baseBlockPos.x, (int)baseBlockPos.y, baseBlock.breed, checkBlocks);
                 }
 
                 if (targetBlock.type == _eBlockType.ITEM)
                 {
-                    _stageController.ChangeAffectedBlocks((int)targetBlock.blockObj.position.x, (int)targetBlock.blockObj.position.y, targetBlock.breed, checkBlocks);
+                    _stageController.ChangeAffectedBlocks((int)targetBlockPos.x, (int)targetBlockPos.y, targetBlock.breed, checkBlocks);
                 }
             }
 
