@@ -123,7 +123,6 @@ namespace Match3.Stage
 
                 if(swipeDir != _eSwipe.NONE)
                 {
-                    // ToDo : 스와이프일 때 아이템 블록 처리
                     _actionManager.DoSwipeAction(_blockDownPos.row, _blockDownPos.col, swipeDir);       // 스와이프 액션 요청
                 }
                 else

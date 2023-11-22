@@ -69,7 +69,12 @@ namespace Match3.Stage
                     yield return EvaluateBoard(matchBlock, baseBlock, targetBlock);
 
                     // 스와이프한 블럭이 3매치 형성되지 않는 경우 원상태로 복귀
-                    // ToDo : 단, 스와이프한 블록 중 하나가 아이템 블록인 경우 실행하지 않음
+                    // 단, 스와이프한 블록 중 하나가 아이템 블록인 경우 실행하지 않음
+
+                    if(matchBlock.value)
+                    {
+                        GameManager.Instance.ReduceRemainingMoves();        // 남은 움직임 횟수 감소
+                    }
 
                     if(!matchBlock.value)
                     {
