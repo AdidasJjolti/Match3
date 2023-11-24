@@ -103,15 +103,13 @@ namespace Match3.Stage
         // 3매치 블럭 삭제, 빈 블럭 자리에 새 블럭 드랍 실행
         IEnumerator EvaluateBoard(Returnable<bool> matchResult, Block baseBlock, Block targetBlock)
         {
-            // ToDo : 스와이프한 블록 중 하나가 아이템 블록인 경우 아이템 블록 효과 로직 우선 실행
+            // 스와이프한 블록 중 하나가 아이템 블록인 경우 아이템 블록 효과 로직 우선 실행
             if (baseBlock.type == _eBlockType.ITEM || targetBlock.type == _eBlockType.ITEM)
             {
                 Debug.Log("스와이프한 블록 중에 아이템이 있어");
 
                 // 이미 체크한 아이템 블록을 저장, 아이템 블록 효과 실행 전에 리스트에 있는 블록인지 우선 체크하여 스택 오버플로우를 방지
                 List<Block> checkBlocks = new List<Block>();
-
-                // ToDo : baseBlock과 targetBlock의 x, y 좌표값을 구하는 메서드 찾기
 
                 // 로컬 좌표를 보드의 블럭 인덱스로 변환
                 Vector2 baseBlockPos = new Vector2(baseBlock.blockObj.position.x + (_stage._Col / 2.0f), baseBlock.blockObj.position.y * -1 + (_stage._Row / 2.0f));

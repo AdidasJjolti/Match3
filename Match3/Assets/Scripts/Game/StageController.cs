@@ -12,6 +12,9 @@ namespace Match3.Stage
         [SerializeField] G_TileMap2D _tilemap2D;                     // MapData 정보를 바탕으로 맵을 생성하기 위한 타일맵, Board 대신 사용
         [SerializeField] G_CameraController _cameraController;       // 카메라 시야 설정을 위한 메인 카메라
 
+        [SerializeField] GameObject _gameClearObj;
+        [SerializeField] GameObject _gameOverObj;
+
         bool _Init;     // 초기화 상태 체크
         Stage _stage;   // Stage 변수 선언
         int _stageNumber;
@@ -226,6 +229,23 @@ namespace Match3.Stage
             }
 
             _board.blocks[x, y].breed = originBreed;
+        }
+
+        public void OpenGameOverUI()
+        {
+            _gameOverObj.SetActive(true);
+        }
+
+        public void OpenGameClearUI()
+        {
+            _gameClearObj.SetActive(true);
+        }
+
+        public void OnClickTitleButton()
+        {
+            _gameOverObj.SetActive(false);
+            _gameClearObj.SetActive(false);
+            SceneManager.LoadScene(0);
         }
     }
 }

@@ -262,6 +262,7 @@ namespace Match3.Board
                 }
             }
 
+            GameManager.Instance.ReduceRemainingBlocks(clearBlocks.Count);
 
             // 리스트에 있는 블럭 모두 제거
             clearBlocks.ForEach((block) => block.Destroy());
